@@ -1165,6 +1165,21 @@ button:focus, select:focus {
     color: white;
 }
 
+/* View containers */
+.exam-table-container,
+.calendar-container {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    display: none;
+}
+
+.exam-table-container[style*="display: block"],
+.calendar-container[style*="display: block"] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 /* Help section */
 .help-section {
     background-color: var(--card-bg);
