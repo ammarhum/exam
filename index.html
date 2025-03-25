@@ -105,6 +105,14 @@
             <!-- Subject tables will be generated here -->
         </div>
 
+        <div class="exam-table-container" id="chronological-container" style="display: none;">
+            <!-- Chronological view will be generated here -->
+        </div>
+
+        <div class="calendar-container" id="calendar-container" style="display: none;">
+            <!-- Calendar view will be generated here -->
+        </div>
+
         <!-- Remove export button from controls section -->
         <div class="controls">
             <button class="action-btn" id="refresh-dates">
@@ -1639,6 +1647,606 @@
 
     <!-- Add keyboard shortcuts -->
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Don't trigger shortcuts when typing in an input
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key) {
+                    case 's':
+                    case 'S':
+                        // Focus search box
+                        const searchInput = document.getElementById('exam-search');
+                        searchInput.focus();
+                        e.preventDefault(); // Prevent typing 's' in the search box
+                        break;
+                    case 'r':
+                    case 'R':
+                        // Refresh days remaining
+                        const refreshBtn = document.getElementById('refresh-dates');
+                        if (refreshBtn) refreshBtn.click();
+                        break;
+                    case 'h':
+                    case 'H':
+                        // Toggle help section
+                        const helpToggle = document.getElementById('help-toggle');
+                        if (helpToggle) helpToggle.click();
+                        break;
+                    case '?':
+                        // Show keyboard shortcuts
+                        toggleKeyboardShortcuts();
+                        break;
+                }
+            });
+            
+            // Setup floating action buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingScrollTopBtn = document.getElementById('floating-scroll-top');
+            
+            if (floatingRefreshBtn) {
+                // Always show floating button
+                floatingRefreshBtn.classList.add('show');
+                
+                // Click handler
+                floatingRefreshBtn.addEventListener('click', function() {
+                    // Visual feedback
+                    this.classList.add('refreshing');
+                    const refreshIcon = this.querySelector('.refresh-icon');
+                    if (refreshIcon) {
+                        refreshIcon.style.transform = 'rotate(360deg)';
+                    }
+                    
+                    // Update all days left counters
+                    updateAllDaysLeft();
+                    
+                    // Show animation and success message
+                    setTimeout(() => {
+                        if (refreshIcon) {
+                            refreshIcon.style.transform = '';
+                        }
+                        this.classList.remove('refreshing');
+                        showSaveMessage("Days remaining updated successfully");
+                    }, 800);
+                });
+            }
+            
+            if (floatingScrollTopBtn) {
+                // Show/hide back to top button based on scroll position
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        floatingScrollTopBtn.classList.add('show');
+                    } else {
+                        floatingScrollTopBtn.classList.remove('show');
+                    }
+                });
+                
+                // Scroll to top when button is clicked
+                floatingScrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Setup help toggle
+            const helpToggle = document.getElementById('help-toggle');
+            const helpSection = document.getElementById('help-section');
+            
+            if (helpToggle && helpSection) {
+                helpToggle.addEventListener('click', function() {
+                    helpSection.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+
+    <!-- Add iOS detection and install banner code -->
+    <script>
+        // Add iOS detection and install banner code
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            // Show banner only on iOS devices that haven't installed the app
+            if (isIOS && !isInStandaloneMode) {
+                // Wait a bit before showing the banner
+                setTimeout(function() {
+                    document.getElementById('ios-install-banner').style.display = 'block';
+                }, 2000);
+            }
+        });
+    </script>
+
+    <!-- Fix initializeApp function -->
+    <script>
+    // Function to initialize the app
+    function initializeApp() {
+        // Make exam view visible and active immediately
+        const examView = document.getElementById('exam-view');
+        if (examView) {
+            examView.classList.add('active');
+            examView.style.opacity = '1';
+        }
+        
+        const footerText = document.getElementById('footer-text');
+        if (footerText) {
+            footerText.textContent = 'Exam Timetable &copy; 2025';
+        }
+        
+        // Initialize exam timetable
+        try {
+            if (typeof renderSubjects === 'function') renderSubjects();
+            if (typeof updateAllDaysLeft === 'function') updateAllDaysLeft();
+            // Don't call renderExamsInOrder() - we removed the bottom chronological view
+            
+            // Show floating buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingExportBtn = document.getElementById('floating-export');
+            if (floatingRefreshBtn) floatingRefreshBtn.classList.add('show');
+            if (floatingExportBtn) floatingExportBtn.classList.add('show');
+        } catch (error) {
+            console.error('Error initializing exam timetable:', error);
+        }
+        
+        // Handle splash screen
+        const splashScreen = document.getElementById('splash-screen');
+        if (splashScreen) {
+            try {
+                // Hide splash screen after 1.5 seconds for faster loading
+                setTimeout(() => {
+                    splashScreen.classList.add('hide');
+                    // Remove from DOM after animation completes
+                    setTimeout(() => {
+                        if (splashScreen.parentNode) {
+                            splashScreen.parentNode.removeChild(splashScreen);
+                        }
+                    }, 500);
+                }, 1500);
+            } catch (error) {
+                console.error('Error handling splash screen:', error);
+                // Fallback removal in case of error
+                if (splashScreen.parentNode) {
+                    splashScreen.parentNode.removeChild(splashScreen);
+                }
+            }
+        }
+    }
+    </script>
+
+    <!-- Add dark mode, calendar, and export functionality -->
+    <script>
+        // Toggle dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            // Check for saved preference
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            
+            // Apply dark mode if saved
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<span>☀️</span>';
+            }
+            
+            // Handle toggle click
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                
+                // Update icon
+                this.innerHTML = isDarkMode ? '<span>☀️</span>' : '<span>🌙</span>';
+                
+                // Save preference
+                localStorage.setItem('darkMode', isDarkMode);
+            });
+        });
+    </script>
+
+    <!-- Add keyboard shortcuts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Don't trigger shortcuts when typing in an input
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key) {
+                    case 's':
+                    case 'S':
+                        // Focus search box
+                        const searchInput = document.getElementById('exam-search');
+                        searchInput.focus();
+                        e.preventDefault(); // Prevent typing 's' in the search box
+                        break;
+                    case 'r':
+                    case 'R':
+                        // Refresh days remaining
+                        const refreshBtn = document.getElementById('refresh-dates');
+                        if (refreshBtn) refreshBtn.click();
+                        break;
+                    case 'h':
+                    case 'H':
+                        // Toggle help section
+                        const helpToggle = document.getElementById('help-toggle');
+                        if (helpToggle) helpToggle.click();
+                        break;
+                    case '?':
+                        // Show keyboard shortcuts
+                        toggleKeyboardShortcuts();
+                        break;
+                }
+            });
+            
+            // Setup floating action buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingScrollTopBtn = document.getElementById('floating-scroll-top');
+            
+            if (floatingRefreshBtn) {
+                // Always show floating button
+                floatingRefreshBtn.classList.add('show');
+                
+                // Click handler
+                floatingRefreshBtn.addEventListener('click', function() {
+                    // Visual feedback
+                    this.classList.add('refreshing');
+                    const refreshIcon = this.querySelector('.refresh-icon');
+                    if (refreshIcon) {
+                        refreshIcon.style.transform = 'rotate(360deg)';
+                    }
+                    
+                    // Update all days left counters
+                    updateAllDaysLeft();
+                    
+                    // Show animation and success message
+                    setTimeout(() => {
+                        if (refreshIcon) {
+                            refreshIcon.style.transform = '';
+                        }
+                        this.classList.remove('refreshing');
+                        showSaveMessage("Days remaining updated successfully");
+                    }, 800);
+                });
+            }
+            
+            if (floatingScrollTopBtn) {
+                // Show/hide back to top button based on scroll position
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        floatingScrollTopBtn.classList.add('show');
+                    } else {
+                        floatingScrollTopBtn.classList.remove('show');
+                    }
+                });
+                
+                // Scroll to top when button is clicked
+                floatingScrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Setup help toggle
+            const helpToggle = document.getElementById('help-toggle');
+            const helpSection = document.getElementById('help-section');
+            
+            if (helpToggle && helpSection) {
+                helpToggle.addEventListener('click', function() {
+                    helpSection.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+
+    <!-- Add iOS detection and install banner code -->
+    <script>
+        // Add iOS detection and install banner code
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            // Show banner only on iOS devices that haven't installed the app
+            if (isIOS && !isInStandaloneMode) {
+                // Wait a bit before showing the banner
+                setTimeout(function() {
+                    document.getElementById('ios-install-banner').style.display = 'block';
+                }, 2000);
+            }
+        });
+    </script>
+
+    <!-- Fix initializeApp function -->
+    <script>
+    // Function to initialize the app
+    function initializeApp() {
+        // Make exam view visible and active immediately
+        const examView = document.getElementById('exam-view');
+        if (examView) {
+            examView.classList.add('active');
+            examView.style.opacity = '1';
+        }
+        
+        const footerText = document.getElementById('footer-text');
+        if (footerText) {
+            footerText.textContent = 'Exam Timetable &copy; 2025';
+        }
+        
+        // Initialize exam timetable
+        try {
+            if (typeof renderSubjects === 'function') renderSubjects();
+            if (typeof updateAllDaysLeft === 'function') updateAllDaysLeft();
+            // Don't call renderExamsInOrder() - we removed the bottom chronological view
+            
+            // Show floating buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingExportBtn = document.getElementById('floating-export');
+            if (floatingRefreshBtn) floatingRefreshBtn.classList.add('show');
+            if (floatingExportBtn) floatingExportBtn.classList.add('show');
+        } catch (error) {
+            console.error('Error initializing exam timetable:', error);
+        }
+        
+        // Handle splash screen
+        const splashScreen = document.getElementById('splash-screen');
+        if (splashScreen) {
+            try {
+                // Hide splash screen after 1.5 seconds for faster loading
+                setTimeout(() => {
+                    splashScreen.classList.add('hide');
+                    // Remove from DOM after animation completes
+                    setTimeout(() => {
+                        if (splashScreen.parentNode) {
+                            splashScreen.parentNode.removeChild(splashScreen);
+                        }
+                    }, 500);
+                }, 1500);
+            } catch (error) {
+                console.error('Error handling splash screen:', error);
+                // Fallback removal in case of error
+                if (splashScreen.parentNode) {
+                    splashScreen.parentNode.removeChild(splashScreen);
+                }
+            }
+        }
+    }
+    </script>
+
+    <!-- Add dark mode, calendar, and export functionality -->
+    <script>
+        // Toggle dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            // Check for saved preference
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            
+            // Apply dark mode if saved
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<span>☀️</span>';
+            }
+            
+            // Handle toggle click
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                
+                // Update icon
+                this.innerHTML = isDarkMode ? '<span>☀️</span>' : '<span>🌙</span>';
+                
+                // Save preference
+                localStorage.setItem('darkMode', isDarkMode);
+            });
+        });
+    </script>
+
+    <!-- Add keyboard shortcuts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Don't trigger shortcuts when typing in an input
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key) {
+                    case 's':
+                    case 'S':
+                        // Focus search box
+                        const searchInput = document.getElementById('exam-search');
+                        searchInput.focus();
+                        e.preventDefault(); // Prevent typing 's' in the search box
+                        break;
+                    case 'r':
+                    case 'R':
+                        // Refresh days remaining
+                        const refreshBtn = document.getElementById('refresh-dates');
+                        if (refreshBtn) refreshBtn.click();
+                        break;
+                    case 'h':
+                    case 'H':
+                        // Toggle help section
+                        const helpToggle = document.getElementById('help-toggle');
+                        if (helpToggle) helpToggle.click();
+                        break;
+                    case '?':
+                        // Show keyboard shortcuts
+                        toggleKeyboardShortcuts();
+                        break;
+                }
+            });
+            
+            // Setup floating action buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingScrollTopBtn = document.getElementById('floating-scroll-top');
+            
+            if (floatingRefreshBtn) {
+                // Always show floating button
+                floatingRefreshBtn.classList.add('show');
+                
+                // Click handler
+                floatingRefreshBtn.addEventListener('click', function() {
+                    // Visual feedback
+                    this.classList.add('refreshing');
+                    const refreshIcon = this.querySelector('.refresh-icon');
+                    if (refreshIcon) {
+                        refreshIcon.style.transform = 'rotate(360deg)';
+                    }
+                    
+                    // Update all days left counters
+                    updateAllDaysLeft();
+                    
+                    // Show animation and success message
+                    setTimeout(() => {
+                        if (refreshIcon) {
+                            refreshIcon.style.transform = '';
+                        }
+                        this.classList.remove('refreshing');
+                        showSaveMessage("Days remaining updated successfully");
+                    }, 800);
+                });
+            }
+            
+            if (floatingScrollTopBtn) {
+                // Show/hide back to top button based on scroll position
+                window.addEventListener('scroll', function() {
+                    if (window.pageYOffset > 300) {
+                        floatingScrollTopBtn.classList.add('show');
+                    } else {
+                        floatingScrollTopBtn.classList.remove('show');
+                    }
+                });
+                
+                // Scroll to top when button is clicked
+                floatingScrollTopBtn.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Setup help toggle
+            const helpToggle = document.getElementById('help-toggle');
+            const helpSection = document.getElementById('help-section');
+            
+            if (helpToggle && helpSection) {
+                helpToggle.addEventListener('click', function() {
+                    helpSection.classList.toggle('show');
+                });
+            }
+        });
+    </script>
+
+    <!-- Add iOS detection and install banner code -->
+    <script>
+        // Add iOS detection and install banner code
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            
+            // Show banner only on iOS devices that haven't installed the app
+            if (isIOS && !isInStandaloneMode) {
+                // Wait a bit before showing the banner
+                setTimeout(function() {
+                    document.getElementById('ios-install-banner').style.display = 'block';
+                }, 2000);
+            }
+        });
+    </script>
+
+    <!-- Fix initializeApp function -->
+    <script>
+    // Function to initialize the app
+    function initializeApp() {
+        // Make exam view visible and active immediately
+        const examView = document.getElementById('exam-view');
+        if (examView) {
+            examView.classList.add('active');
+            examView.style.opacity = '1';
+        }
+        
+        const footerText = document.getElementById('footer-text');
+        if (footerText) {
+            footerText.textContent = 'Exam Timetable &copy; 2025';
+        }
+        
+        // Initialize exam timetable
+        try {
+            if (typeof renderSubjects === 'function') renderSubjects();
+            if (typeof updateAllDaysLeft === 'function') updateAllDaysLeft();
+            // Don't call renderExamsInOrder() - we removed the bottom chronological view
+            
+            // Show floating buttons
+            const floatingRefreshBtn = document.getElementById('floating-refresh');
+            const floatingExportBtn = document.getElementById('floating-export');
+            if (floatingRefreshBtn) floatingRefreshBtn.classList.add('show');
+            if (floatingExportBtn) floatingExportBtn.classList.add('show');
+        } catch (error) {
+            console.error('Error initializing exam timetable:', error);
+        }
+        
+        // Handle splash screen
+        const splashScreen = document.getElementById('splash-screen');
+        if (splashScreen) {
+            try {
+                // Hide splash screen after 1.5 seconds for faster loading
+                setTimeout(() => {
+                    splashScreen.classList.add('hide');
+                    // Remove from DOM after animation completes
+                    setTimeout(() => {
+                        if (splashScreen.parentNode) {
+                            splashScreen.parentNode.removeChild(splashScreen);
+                        }
+                    }, 500);
+                }, 1500);
+            } catch (error) {
+                console.error('Error handling splash screen:', error);
+                // Fallback removal in case of error
+                if (splashScreen.parentNode) {
+                    splashScreen.parentNode.removeChild(splashScreen);
+                }
+            }
+        }
+    }
+    </script>
+
+    <!-- Add dark mode, calendar, and export functionality -->
+    <script>
+        // Toggle dark mode
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            
+            // Check for saved preference
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            
+            // Apply dark mode if saved
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<span>☀️</span>';
+            }
+            
+            // Handle toggle click
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDarkMode = document.body.classList.contains('dark-mode');
+                
+                // Update icon
+                this.innerHTML = isDarkMode ? '<span>☀️</span>' : '<span>🌙</span>';
+                
+                // Save preference
+                localStorage.setItem('darkMode', isDarkMode);
+            });
+        });
+    </script>
+
+    <!-- Add keyboard shortcuts -->
+    <script>
         // Function to toggle keyboard shortcuts overlay
         function toggleKeyboardShortcuts() {
             // Check if keyboard shortcuts overlay exists
@@ -1741,22 +2349,8 @@
             // Setup view switching
             const viewButtons = document.querySelectorAll('.view-btn');
             const subjectsContainer = document.getElementById('subjects-container');
-            
-            // Create containers for other views (they don't exist yet)
-            const chronologicalContainer = document.createElement('div');
-            chronologicalContainer.id = 'chronological-container';
-            chronologicalContainer.className = 'exam-table-container';
-            chronologicalContainer.style.display = 'none';
-            
-            const calendarContainer = document.createElement('div');
-            calendarContainer.id = 'calendar-container';
-            calendarContainer.className = 'calendar-container';
-            calendarContainer.style.display = 'none';
-            
-            // Add containers to the view
-            const examView = document.getElementById('exam-view');
-            examView.insertBefore(chronologicalContainer, subjectsContainer.nextSibling);
-            examView.insertBefore(calendarContainer, chronologicalContainer.nextSibling);
+            const chronologicalContainer = document.getElementById('chronological-container');
+            const calendarContainer = document.getElementById('calendar-container');
             
             // Set up view button click handlers
             viewButtons.forEach(button => {
@@ -1789,7 +2383,7 @@
                     }
                 });
             });
-            
+
             // Function to render chronological view
             function renderChronologicalView() {
                 try {
@@ -1888,86 +2482,6 @@
                 }
             }
 
-            // Function to sort table
-            function sortTable(table, field) {
-                const thead = table.querySelector('thead');
-                const tbody = table.querySelector('tbody');
-                const rows = Array.from(tbody.querySelectorAll('tr'));
-                
-                // Find the header
-                const header = thead.querySelector(`th[data-field="${field}"]`);
-                
-                // Toggle sort direction
-                const isDescending = header.classList.contains('sorted') && !header.classList.contains('sorted-desc');
-                
-                // Reset all headers
-                thead.querySelectorAll('th').forEach(th => {
-                    th.classList.remove('sorted', 'sorted-desc');
-                });
-                
-                // Mark this header as sorted
-                header.classList.add('sorted');
-                if (isDescending) {
-                    header.classList.add('sorted-desc');
-                }
-                
-                // Sort rows
-                rows.sort((a, b) => {
-                    let aValue, bValue;
-                    
-                    // Get values based on field
-                    if (field === 'daysLeft') {
-                        // Extract days left as number (handle special cases like "Today" and "Past")
-                        const aText = a.querySelector('.days-left-value').textContent;
-                        const bText = b.querySelector('.days-left-value').textContent;
-                        
-                        aValue = aText === 'Today' ? 0 : aText === 'Past' ? -1 : parseInt(aText);
-                        bValue = bText === 'Today' ? 0 : bText === 'Past' ? -1 : parseInt(bText);
-                    } else if (field === 'dateObj') {
-                        // Compare dates
-                        const aDate = a.cells[2].textContent;
-                        const bDate = b.cells[2].textContent;
-                        
-                        aValue = parseDateFromString(aDate);
-                        bValue = parseDateFromString(bDate);
-                    } else {
-                        // Text comparison for subject and name
-                        const columnIndex = field === 'subject' ? 0 : 1;
-                        aValue = a.cells[columnIndex].textContent.toLowerCase();
-                        bValue = b.cells[columnIndex].textContent.toLowerCase();
-                    }
-                    
-                    // Compare values
-                    if (aValue < bValue) return isDescending ? 1 : -1;
-                    if (aValue > bValue) return isDescending ? -1 : 1;
-                    return 0;
-                });
-                
-                // Reorder rows
-                rows.forEach(row => tbody.appendChild(row));
-            }
-
-            // Helper to parse date string
-            function parseDateFromString(dateStr) {
-                try {
-                    const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
-                    const match = dateStr.match(regex);
-                    
-                    if (match) {
-                        const monthName = match[1];
-                        const day = parseInt(match[2], 10);
-                        const year = new Date().getFullYear();
-                        const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
-                        return new Date(year, monthIndex, day);
-                    }
-                    
-                    return new Date(0); // fallback
-                } catch (error) {
-                    console.error('Error parsing date:', error);
-                    return new Date(0);
-                }
-            }
-
             // Function to render calendar view
             function renderCalendarView() {
                 try {
@@ -2031,8 +2545,6 @@
                         // Get first day of month and number of days
                         const firstDay = new Date(year, month, 1).getDay();
                         const daysInMonth = new Date(year, month + 1, 0).getDate();
-                        
-                        // Create calendar days
                         
                         // Add empty cells for days before first day of month
                         for (let i = 0; i < firstDay; i++) {
