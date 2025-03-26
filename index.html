@@ -229,13 +229,14 @@
             
             .subject-table, .chronological-table {
                 display: block;
-                width: 100%;
+                width: 100% !important;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
-                table-layout: fixed;
+                table-layout: fixed !important;
                 font-size: 14px;
                 border-collapse: collapse;
-                min-width: 100%;
+                min-width: 100% !important;
+                margin: 0 !important;
             }
             
             /* Fix for "By Subject" tab on iPhone */
@@ -245,7 +246,11 @@
                 overflow: hidden;
                 box-shadow: 0 1px 3px rgba(0,0,0,0.1);
                 background-color: #fff;
-                width: 100%;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 0 20px 0 !important;
+                box-sizing: border-box;
             }
             
             .subject-table caption {
@@ -273,28 +278,21 @@
                 border-bottom: 1px solid #eee;
             }
             
-            .subject-table .exam-name {
-                min-width: 80px;
-                max-width: 140px;
-                word-break: break-word;
-            }
-            
-            .subject-table .exam-date {
-                white-space: nowrap;
-                min-width: 90px;
-            }
-            
-            /* Column widths for uniform display on small screens */
+            /* Force column widths */
             .exam-name-header, .exam-name {
-                width: 45%;
+                width: 45% !important;
+                max-width: 45% !important;
             }
             
             .exam-date-header, .exam-date {
-                width: 30%;
+                width: 30% !important;
+                max-width: 30% !important;
+                white-space: nowrap;
             }
             
             .days-left-header, .days-left {
-                width: 25%;
+                width: 25% !important;
+                max-width: 25% !important;
                 text-align: center;
             }
             
@@ -327,129 +325,74 @@
                 color: white;
             }
             
-            .floating-action-buttons {
-                bottom: 20px;
-                right: 20px;
+            /* Container fixes for small screens */
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 10px !important;
+                margin: 0 !important;
+                box-sizing: border-box;
+                overflow-x: hidden;
             }
             
-            .fab {
-                width: 48px;
-                height: 48px;
-                font-size: 20px;
+            .exam-table-container {
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             
-            .search-container {
-                width: 90%;
-                margin: 0 auto 15px;
+            /* Improve row display */
+            .subject-table tr, .chronological-table tr {
+                width: 100% !important;
+                display: table-row !important;
             }
             
-            .search-input {
-                padding: 12px;
-                font-size: 16px;
-            }
-            
-            .calendar-grid {
-                grid-template-columns: repeat(7, minmax(40px, 1fr));
-            }
-            
-            .calendar-day {
-                min-height: 50px;
-            }
-            
-            .calendar-exam {
-                padding: 4px;
-                font-size: 10px;
-            }
-            
-            .day-number {
-                font-size: 14px;
-            }
-            
-            /* iOS-specific fixes - ONLY on mobile */
+            /* Fix for iOS Safari - most important fixes */
             @supports (-webkit-touch-callout: none) {
-                .subject-table {
-                    width: 100%;
-                    min-width: 100%;
-                    table-layout: fixed;
+                .subject-table, .chronological-table {
+                    width: 100% !important;
+                    min-width: 100% !important;
+                    table-layout: fixed !important;
+                    border-collapse: collapse !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
                 }
                 
-                /* Fix for truncated table cells */
-                .subject-table td {
-                    max-width: 33vw;
+                /* Force full width and proper display on iOS */
+                #subjects-container, #chronological-container, #calendar-container {
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    overflow-x: hidden !important;
                 }
                 
-                /* Fix for date display */
-                .exam-date {
-                    white-space: nowrap;
+                /* Force column sizes on iOS */
+                .subject-table th, .subject-table td,
+                .chronological-table th, .chronological-table td {
+                    box-sizing: border-box !important;
                 }
                 
-                /* Prevent elastic scrolling issues - MODIFIED to allow scrolling */
-                html {
-                    width: 100%;
-                    -webkit-overflow-scrolling: touch;
-                    overflow-x: hidden;
-                    position: relative;
+                /* Force caption width */
+                .subject-table caption {
+                    width: 100% !important;
+                    box-sizing: border-box !important;
                 }
                 
-                body {
-                    width: 100%;
-                    overflow-x: hidden;
-                    -webkit-overflow-scrolling: touch;
-                }
-                
-                /* Improve tap highlight color */
-                * {
-                    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
-                }
-                
-                /* Fix for full width tables - FIXED to properly span the screen width */
+                /* Improve table appearance for iOS */
                 .table-container {
-                    width: 100%;
-                    max-width: 100%;
-                    margin: 0 0 20px 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                    border-radius: 8px;
-                    overflow: hidden;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    box-sizing: border-box !important;
+                    overflow: hidden !important;
+                    margin: 0 0 20px 0 !important;
+                    padding: 0 !important;
                 }
                 
-                .subject-table {
-                    width: 100%;
-                    max-width: 100%;
-                    margin: 0;
-                    border-collapse: collapse;
-                }
-                
-                /* Ensure all columns take full width */
-                .subject-table tr {
-                    width: 100%;
-                    display: table-row;
-                }
-                
-                /* Force each row to take full width */
-                .subject-table tr td,
-                .subject-table tr th {
-                    box-sizing: border-box;
-                }
-                
-                /* Fix container to prevent overflow */
-                .container {
-                    padding: 0;
-                    width: 100%;
-                    max-width: 100%;
-                    box-sizing: border-box;
-                    overflow: hidden;
-                }
-                
-                .exam-table-container {
-                    width: 100%;
-                    padding: 0;
-                    margin: 0;
-                }
-                
-                /* Remove any scrollbars while maintaining content */
-                .container, .exam-table-container, #subjects-container, #chronological-container {
-                    overflow-x: hidden;
+                /* Force entire layout to be within screen */
+                html, body {
+                    width: 100% !important;
+                    overflow-x: hidden !important;
+                    position: relative !important;
+                    -webkit-text-size-adjust: 100% !important;
                 }
             }
         }
@@ -747,8 +690,11 @@
                 
                 container.innerHTML = '';
                 
-                // Only apply mobile-specific styles on small screens
-                if (window.innerWidth <= 767) {
+                // Detect iOS for special handling
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                
+                // Force container styles for mobile and iOS
+                if (window.innerWidth <= 767 || isIOS) {
                     container.style.width = '100%';
                     container.style.padding = '0';
                     container.style.margin = '0';
@@ -759,8 +705,8 @@
                     const tableContainer = document.createElement('div');
                     tableContainer.className = 'table-container';
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         tableContainer.style.width = '100%';
                         tableContainer.style.maxWidth = '100%';
                         tableContainer.style.boxSizing = 'border-box';
@@ -772,9 +718,10 @@
                     const table = document.createElement('table');
                     table.className = 'subject-table';
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         table.style.width = '100%';
+                        table.style.maxWidth = '100%';
                         table.style.tableLayout = 'fixed';
                         table.style.borderCollapse = 'collapse';
                     }
@@ -783,8 +730,8 @@
                     const caption = document.createElement('caption');
                     caption.textContent = subject;
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         caption.style.width = '100%';
                         caption.style.boxSizing = 'border-box';
                     }
@@ -794,15 +741,15 @@
                     // Create table headers
                     const thead = document.createElement('thead');
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         thead.style.width = '100%';
                     }
                     
                     const headerRow = document.createElement('tr');
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         headerRow.style.width = '100%';
                     }
                     
@@ -810,8 +757,8 @@
                     nameHeader.textContent = 'Exam';
                     nameHeader.className = 'exam-name-header';
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         nameHeader.style.width = '45%';
                     }
                     
@@ -819,8 +766,8 @@
                     dateHeader.textContent = 'Date';
                     dateHeader.className = 'exam-date-header';
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         dateHeader.style.width = '30%';
                     }
                     
@@ -828,8 +775,8 @@
                     daysLeftHeader.textContent = 'Days Left';
                     daysLeftHeader.className = 'days-left-header';
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         daysLeftHeader.style.width = '25%';
                         daysLeftHeader.style.textAlign = 'center';
                     }
@@ -843,8 +790,8 @@
                     // Create table body
                     const tbody = document.createElement('tbody');
                     
-                    // Only apply mobile-specific styles on small screens
-                    if (window.innerWidth <= 767) {
+                    // Force styles for mobile and iOS
+                    if (window.innerWidth <= 767 || isIOS) {
                         tbody.style.width = '100%';
                     }
                     
@@ -854,17 +801,18 @@
                         row.dataset.subject = subject;
                         row.dataset.examDate = exam.date;
                         
-                        // Only apply mobile-specific styles on small screens
-                        if (window.innerWidth <= 767) {
+                        // Force styles for mobile and iOS
+                        if (window.innerWidth <= 767 || isIOS) {
                             row.style.width = '100%';
+                            row.style.display = 'table-row';
                         }
                         
                         const nameCell = document.createElement('td');
                         nameCell.className = 'exam-name';
                         nameCell.textContent = exam.name;
                         
-                        // Only apply mobile-specific styles on small screens
-                        if (window.innerWidth <= 767) {
+                        // Force styles for mobile and iOS
+                        if (window.innerWidth <= 767 || isIOS) {
                             nameCell.style.width = '45%';
                             nameCell.style.maxWidth = '45%';
                         }
@@ -873,8 +821,8 @@
                         dateCell.className = 'exam-date';
                         dateCell.textContent = exam.date;
                         
-                        // Only apply mobile-specific styles on small screens
-                        if (window.innerWidth <= 767) {
+                        // Force styles for mobile and iOS
+                        if (window.innerWidth <= 767 || isIOS) {
                             dateCell.style.width = '30%';
                             dateCell.style.maxWidth = '30%';
                             dateCell.style.whiteSpace = 'nowrap';
@@ -884,8 +832,8 @@
                         daysLeftCell.className = 'days-left';
                         daysLeftCell.dataset.examDate = exam.date;
                         
-                        // Only apply mobile-specific styles on small screens
-                        if (window.innerWidth <= 767) {
+                        // Force styles for mobile and iOS
+                        if (window.innerWidth <= 767 || isIOS) {
                             daysLeftCell.style.width = '25%';
                             daysLeftCell.style.maxWidth = '25%';
                             daysLeftCell.style.textAlign = 'center';
@@ -902,8 +850,8 @@
                         const daysLeftSpan = document.createElement('span');
                         daysLeftSpan.className = 'days-left-value';
                         
-                        // Only apply mobile-specific styles on small screens
-                        if (window.innerWidth <= 767) {
+                        // Force styles for mobile and iOS
+                        if (window.innerWidth <= 767 || isIOS) {
                             daysLeftSpan.style.width = 'auto';
                             daysLeftSpan.style.display = 'inline-block';
                             daysLeftSpan.style.textAlign = 'center';
@@ -933,8 +881,11 @@
         
         // Function to optimize tables for mobile display
         function optimizeTablesForMobile() {
-            // Only apply mobile optimizations when on a small screen
-            if (window.innerWidth <= 767) {
+            // Detect iOS for special handling
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Apply mobile optimizations when on a small screen or iOS device
+            if (window.innerWidth <= 767 || isIOS) {
                 // Get all subject tables
                 const tables = document.querySelectorAll('.subject-table');
                 
@@ -1027,7 +978,39 @@
                 const chronoTable = document.querySelector('.chronological-table');
                 if (chronoTable) {
                     chronoTable.style.width = '100%';
+                    chronoTable.style.maxWidth = '100%';
                     chronoTable.style.tableLayout = 'fixed';
+                    
+                    // Special handling for iOS devices - extra fixes for chronological table
+                    if (isIOS) {
+                        // Force display mode
+                        chronoTable.style.display = 'table';
+                        chronoTable.style.borderCollapse = 'collapse';
+                        
+                        // Force proper sizing of subject column in chronological view
+                        const subjectHeader = chronoTable.querySelector('th:first-child');
+                        const nameHeader = chronoTable.querySelector('th:nth-child(2)');
+                        const dateHeader = chronoTable.querySelector('th:nth-child(3)');
+                        const daysHeader = chronoTable.querySelector('th:nth-child(4)');
+                        
+                        if (subjectHeader && nameHeader && dateHeader && daysHeader) {
+                            subjectHeader.style.width = '25%';
+                            nameHeader.style.width = '25%';
+                            dateHeader.style.width = '25%';
+                            daysHeader.style.width = '25%';
+                            
+                            // Apply same widths to cells
+                            const rows = chronoTable.querySelectorAll('tbody tr');
+                            rows.forEach(row => {
+                                if (row.cells.length >= 4) {
+                                    row.cells[0].style.width = '25%';
+                                    row.cells[1].style.width = '25%';
+                                    row.cells[2].style.width = '25%';
+                                    row.cells[3].style.width = '25%';
+                                }
+                            });
+                        }
+                    }
                     
                     // Similar treatment for chronological table rows
                     const rows = chronoTable.querySelectorAll('tr');
@@ -1036,16 +1019,62 @@
                         row.style.display = 'table-row';
                     });
                 }
+                
+                // Additional fix: force redraw by toggling display
+                if (isIOS) {
+                    const subjects = document.getElementById('subjects-container');
+                    if (subjects) {
+                        const display = subjects.style.display;
+                        subjects.style.display = 'none';
+                        setTimeout(() => {
+                            subjects.style.display = display;
+                        }, 0);
+                    }
+                }
             }
         }
         
         // Check window resize for responsive adjustments
         window.addEventListener('resize', function() {
-            // Only optimize for mobile if we're on a small screen
-            if (window.innerWidth <= 767) {
+            // Detect iOS for special handling
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Optimize for mobile or iOS
+            if (window.innerWidth <= 767 || isIOS) {
                 optimizeTablesForMobile();
             }
         });
+        
+        // Function to update all tabs' styling
+        function updateAllViewsForMobile() {
+            // Force optimization on all views
+            optimizeTablesForMobile();
+            
+            // Detect iOS for special handling
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            // Additional iOS-specific fixes
+            if (isIOS) {
+                // Force redraw chronological view
+                const chronologicalTable = document.querySelector('.chronological-table');
+                if (chronologicalTable) {
+                    chronologicalTable.style.width = '100%';
+                    chronologicalTable.style.maxWidth = '100%';
+                    chronologicalTable.style.tableLayout = 'fixed';
+                    chronologicalTable.style.borderCollapse = 'collapse';
+                }
+                
+                // Force container widths
+                const containers = document.querySelectorAll('.exam-table-container');
+                containers.forEach(container => {
+                    container.style.width = '100%';
+                    container.style.maxWidth = '100%';
+                    container.style.padding = '0';
+                    container.style.margin = '0';
+                    container.style.boxSizing = 'border-box';
+                });
+            }
+        }
         
         // Function to update days left display
         function updateDaysLeftDisplay(element, daysLeft) {
@@ -1706,14 +1735,20 @@
                     switch(viewType) {
                         case 'subjects':
                             subjectsContainer.style.display = 'block';
+                            // Force mobile optimization
+                            setTimeout(updateAllViewsForMobile, 0);
                             break;
                         case 'chronological':
                             chronologicalContainer.style.display = 'block';
                             renderExamsInOrder();
+                            // Force mobile optimization after rendering
+                            setTimeout(updateAllViewsForMobile, 10);
                             break;
                         case 'calendar':
                             calendarContainer.style.display = 'block';
                             renderCalendarView();
+                            // Force mobile optimization after rendering
+                            setTimeout(updateAllViewsForMobile, 10);
                             break;
                     }
                 });
