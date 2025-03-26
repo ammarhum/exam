@@ -194,11 +194,94 @@
                 width: 100%;
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                table-layout: fixed;
+                font-size: 14px;
+                border-collapse: collapse;
+            }
+            
+            /* Fix for "By Subject" tab on iPhone */
+            .table-container {
+                margin-bottom: 20px;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                background-color: #fff;
+                width: 100%;
+            }
+            
+            .subject-table caption {
+                font-weight: bold;
+                padding: 12px 8px;
+                background-color: var(--primary-color, #3498db);
+                color: white;
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .subject-table th {
+                white-space: nowrap;
+                padding: 10px 8px;
+                font-size: 14px;
+                text-align: left;
+                background-color: #f5f5f5;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .subject-table td {
+                padding: 10px 8px;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .subject-table .exam-name {
+                min-width: 80px;
+                max-width: 140px;
+                word-break: break-word;
+            }
+            
+            .subject-table .exam-date {
+                white-space: nowrap;
+                min-width: 90px;
+            }
+            
+            /* Column widths for uniform display on small screens */
+            .exam-name-header, .exam-name {
+                width: 45%;
+            }
+            
+            .exam-date-header, .exam-date {
+                width: 30%;
+            }
+            
+            .days-left-header, .days-left {
+                width: 25%;
+                text-align: center;
             }
             
             .days-left-value {
                 min-width: 60px;
                 display: inline-block;
+                text-align: center;
+                border-radius: 4px;
+                padding: 4px 2px;
+                font-weight: bold;
+            }
+            
+            /* Improve background colors for days left indicators */
+            .days-urgent {
+                background-color: rgba(255, 87, 87, 0.2);
+            }
+            
+            .days-soon {
+                background-color: rgba(255, 193, 7, 0.2);
+            }
+            
+            .days-upcoming {
+                background-color: rgba(76, 175, 80, 0.2);
+            }
+            
+            .days-distant {
+                background-color: rgba(33, 150, 243, 0.2);
             }
             
             .floating-action-buttons {
@@ -237,6 +320,38 @@
             
             .day-number {
                 font-size: 14px;
+            }
+            
+            /* iOS-specific fixes */
+            @supports (-webkit-touch-callout: none) {
+                .subject-table {
+                    width: 100%;
+                    min-width: 100%;
+                }
+                
+                /* Fix for truncated table cells */
+                .subject-table td {
+                    max-width: 33vw;
+                }
+                
+                /* Fix for date display */
+                .exam-date {
+                    white-space: nowrap;
+                }
+                
+                /* Prevent elastic scrolling issues */
+                html, body {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+                
+                /* Improve tap highlight color */
+                * {
+                    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                }
             }
         }
     </style>
@@ -551,12 +666,15 @@
                     
                     const nameHeader = document.createElement('th');
                     nameHeader.textContent = 'Exam';
+                    nameHeader.className = 'exam-name-header';
                     
                     const dateHeader = document.createElement('th');
                     dateHeader.textContent = 'Date';
+                    dateHeader.className = 'exam-date-header';
                     
                     const daysLeftHeader = document.createElement('th');
                     daysLeftHeader.textContent = 'Days Left';
+                    daysLeftHeader.className = 'days-left-header';
                     
                     headerRow.appendChild(nameHeader);
                     headerRow.appendChild(dateHeader);
@@ -609,10 +727,51 @@
                     tableContainer.appendChild(table);
                     container.appendChild(tableContainer);
                 });
+                
+                // Optimize table layout for mobile after rendering
+                optimizeTablesForMobile();
             } catch (error) {
                 console.error('Error rendering subjects:', error);
             }
         }
+        
+        // Function to optimize tables for mobile display
+        function optimizeTablesForMobile() {
+            if (window.innerWidth <= 480) {
+                // Check if we're on iOS
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                
+                if (isIOS) {
+                    // Get all subject tables
+                    const tables = document.querySelectorAll('.subject-table');
+                    
+                    tables.forEach(table => {
+                        // Set explicit widths for iOS Safari
+                        const nameHeader = table.querySelector('.exam-name-header');
+                        const dateHeader = table.querySelector('.exam-date-header');
+                        const daysHeader = table.querySelector('.days-left-header');
+                        
+                        if (nameHeader && dateHeader && daysHeader) {
+                            nameHeader.style.width = '45%';
+                            dateHeader.style.width = '30%';
+                            daysHeader.style.width = '25%';
+                        }
+                        
+                        // Make sure the container is sized correctly
+                        const container = table.closest('.table-container');
+                        if (container) {
+                            container.style.width = '100%';
+                            container.style.maxWidth = '100%';
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Check window resize for responsive adjustments
+        window.addEventListener('resize', function() {
+            optimizeTablesForMobile();
+        });
         
         // Function to update days left display
         function updateDaysLeftDisplay(element, daysLeft) {
@@ -1179,6 +1338,30 @@
                     }
                 }, 500);
             }
+            
+            // Check if we're on iOS and apply fixes
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+                console.log('iOS device detected, applying specific fixes');
+                
+                // Add iOS-specific class to body
+                document.body.classList.add('ios-device');
+                
+                // Fix for iOS 100vh issue
+                const fixIOSHeight = () => {
+                    const vh = window.innerHeight * 0.01;
+                    document.documentElement.style.setProperty('--vh', `${vh}px`);
+                };
+                
+                fixIOSHeight();
+                window.addEventListener('resize', fixIOSHeight);
+                window.addEventListener('orientationchange', fixIOSHeight);
+                
+                // Enable momentum scrolling on containers
+                const scrollContainers = document.querySelectorAll('.exam-table-container, .calendar-container');
+                scrollContainers.forEach(container => {
+                    container.style.webkitOverflowScrolling = 'touch';
+                });
+            }
 
             // Create view containers if they don't exist
             createViewContainers();
@@ -1197,6 +1380,9 @@
             // Update all days left
             updateAllDaysLeft();
             console.log('Days left updated');
+            
+            // Run optimization after a short delay to ensure DOM is fully rendered
+            setTimeout(optimizeTablesForMobile, 100);
         }
 
         // Helper function to create view containers
