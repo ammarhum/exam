@@ -73,6 +73,44 @@
             color: #777;
         }
         
+        /* Container fixes for mobile */
+        @media screen and (max-width: 767px) {
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: 10px;
+                margin: 0;
+                box-sizing: border-box;
+                overflow-x: hidden;
+            }
+            
+            .header h1 {
+                text-align: center;
+                margin: 10px 0;
+            }
+            
+            .exam-table-container {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            /* Table specific fixes */
+            .table-container {
+                width: 100%;
+                margin: 0 0 20px 0;
+                border-radius: 8px;
+                overflow: hidden;
+                padding: 0;
+            }
+            
+            table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+        }
+        
         /* Modal styles */
         .modal {
             display: none;
@@ -327,7 +365,7 @@
                 font-size: 14px;
             }
             
-            /* iOS-specific fixes */
+            /* iOS-specific fixes - ONLY on mobile */
             @supports (-webkit-touch-callout: none) {
                 .subject-table {
                     width: 100%;
@@ -364,27 +402,54 @@
                     -webkit-tap-highlight-color: rgba(0,0,0,0.1);
                 }
                 
-                /* Fix for full width tables */
+                /* Fix for full width tables - FIXED to properly span the screen width */
                 .table-container {
-                    width: 100vw;
-                    max-width: 100vw;
-                    border-radius: 0;
-                    margin-left: -5%;
-                    margin-right: -5%;
-                    padding-left: 5%;
-                    padding-right: 5%;
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 0 0 20px 0;
+                    padding: 0;
                     box-sizing: border-box;
+                    border-radius: 8px;
+                    overflow: hidden;
                 }
                 
                 .subject-table {
                     width: 100%;
                     max-width: 100%;
+                    margin: 0;
+                    border-collapse: collapse;
                 }
                 
                 /* Ensure all columns take full width */
                 .subject-table tr {
                     width: 100%;
                     display: table-row;
+                }
+                
+                /* Force each row to take full width */
+                .subject-table tr td,
+                .subject-table tr th {
+                    box-sizing: border-box;
+                }
+                
+                /* Fix container to prevent overflow */
+                .container {
+                    padding: 0;
+                    width: 100%;
+                    max-width: 100%;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                }
+                
+                .exam-table-container {
+                    width: 100%;
+                    padding: 0;
+                    margin: 0;
+                }
+                
+                /* Remove any scrollbars while maintaining content */
+                .container, .exam-table-container, #subjects-container, #chronological-container {
+                    overflow-x: hidden;
                 }
             }
         }
@@ -682,33 +747,92 @@
                 
                 container.innerHTML = '';
                 
+                // Only apply mobile-specific styles on small screens
+                if (window.innerWidth <= 767) {
+                    container.style.width = '100%';
+                    container.style.padding = '0';
+                    container.style.margin = '0';
+                    container.style.boxSizing = 'border-box';
+                }
+                
                 Object.entries(exams).forEach(([subject, examList]) => {
                     const tableContainer = document.createElement('div');
                     tableContainer.className = 'table-container';
                     
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        tableContainer.style.width = '100%';
+                        tableContainer.style.maxWidth = '100%';
+                        tableContainer.style.boxSizing = 'border-box';
+                        tableContainer.style.margin = '0 0 20px 0';
+                        tableContainer.style.padding = '0';
+                        tableContainer.style.overflow = 'hidden';
+                    }
+                    
                     const table = document.createElement('table');
                     table.className = 'subject-table';
+                    
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        table.style.width = '100%';
+                        table.style.tableLayout = 'fixed';
+                        table.style.borderCollapse = 'collapse';
+                    }
                     
                     // Create table caption (subject name)
                     const caption = document.createElement('caption');
                     caption.textContent = subject;
+                    
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        caption.style.width = '100%';
+                        caption.style.boxSizing = 'border-box';
+                    }
+                    
                     table.appendChild(caption);
                     
                     // Create table headers
                     const thead = document.createElement('thead');
+                    
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        thead.style.width = '100%';
+                    }
+                    
                     const headerRow = document.createElement('tr');
+                    
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        headerRow.style.width = '100%';
+                    }
                     
                     const nameHeader = document.createElement('th');
                     nameHeader.textContent = 'Exam';
                     nameHeader.className = 'exam-name-header';
                     
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        nameHeader.style.width = '45%';
+                    }
+                    
                     const dateHeader = document.createElement('th');
                     dateHeader.textContent = 'Date';
                     dateHeader.className = 'exam-date-header';
                     
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        dateHeader.style.width = '30%';
+                    }
+                    
                     const daysLeftHeader = document.createElement('th');
                     daysLeftHeader.textContent = 'Days Left';
                     daysLeftHeader.className = 'days-left-header';
+                    
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        daysLeftHeader.style.width = '25%';
+                        daysLeftHeader.style.textAlign = 'center';
+                    }
                     
                     headerRow.appendChild(nameHeader);
                     headerRow.appendChild(dateHeader);
@@ -719,23 +843,53 @@
                     // Create table body
                     const tbody = document.createElement('tbody');
                     
+                    // Only apply mobile-specific styles on small screens
+                    if (window.innerWidth <= 767) {
+                        tbody.style.width = '100%';
+                    }
+                    
                     examList.forEach((exam, index) => {
                         const row = document.createElement('tr');
                         row.dataset.index = index;
                         row.dataset.subject = subject;
                         row.dataset.examDate = exam.date;
                         
+                        // Only apply mobile-specific styles on small screens
+                        if (window.innerWidth <= 767) {
+                            row.style.width = '100%';
+                        }
+                        
                         const nameCell = document.createElement('td');
                         nameCell.className = 'exam-name';
                         nameCell.textContent = exam.name;
+                        
+                        // Only apply mobile-specific styles on small screens
+                        if (window.innerWidth <= 767) {
+                            nameCell.style.width = '45%';
+                            nameCell.style.maxWidth = '45%';
+                        }
                         
                         const dateCell = document.createElement('td');
                         dateCell.className = 'exam-date';
                         dateCell.textContent = exam.date;
                         
+                        // Only apply mobile-specific styles on small screens
+                        if (window.innerWidth <= 767) {
+                            dateCell.style.width = '30%';
+                            dateCell.style.maxWidth = '30%';
+                            dateCell.style.whiteSpace = 'nowrap';
+                        }
+                        
                         const daysLeftCell = document.createElement('td');
                         daysLeftCell.className = 'days-left';
                         daysLeftCell.dataset.examDate = exam.date;
+                        
+                        // Only apply mobile-specific styles on small screens
+                        if (window.innerWidth <= 767) {
+                            daysLeftCell.style.width = '25%';
+                            daysLeftCell.style.maxWidth = '25%';
+                            daysLeftCell.style.textAlign = 'center';
+                        }
                         
                         // Calculate days left
                         const daysLeft = calculateDaysLeft(exam.date);
@@ -747,6 +901,14 @@
                         
                         const daysLeftSpan = document.createElement('span');
                         daysLeftSpan.className = 'days-left-value';
+                        
+                        // Only apply mobile-specific styles on small screens
+                        if (window.innerWidth <= 767) {
+                            daysLeftSpan.style.width = 'auto';
+                            daysLeftSpan.style.display = 'inline-block';
+                            daysLeftSpan.style.textAlign = 'center';
+                        }
+                        
                         updateDaysLeftDisplay(daysLeftSpan, daysLeft);
                         
                         daysLeftCell.appendChild(daysLeftSpan);
@@ -763,7 +925,7 @@
                 });
                 
                 // Optimize table layout for mobile after rendering
-                optimizeTablesForMobile();
+                setTimeout(optimizeTablesForMobile, 0);
             } catch (error) {
                 console.error('Error rendering subjects:', error);
             }
@@ -771,18 +933,20 @@
         
         // Function to optimize tables for mobile display
         function optimizeTablesForMobile() {
-            if (window.innerWidth <= 480) {
-                // Check if we're on iOS
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                
+            // Only apply mobile optimizations when on a small screen
+            if (window.innerWidth <= 767) {
                 // Get all subject tables
                 const tables = document.querySelectorAll('.subject-table');
                 
+                // Force full width on all tables
                 tables.forEach(table => {
-                    // Force full width
+                    // Set explicit styles for full width
                     table.style.width = '100%';
+                    table.style.maxWidth = '100%';
+                    table.style.tableLayout = 'fixed';
+                    table.style.borderCollapse = 'collapse';
                     
-                    // Set explicit widths for iOS Safari
+                    // Set explicit widths for headers and cells
                     const nameHeader = table.querySelector('.exam-name-header');
                     const dateHeader = table.querySelector('.exam-date-header');
                     const daysHeader = table.querySelector('.days-left-header');
@@ -797,60 +961,90 @@
                         const dateCells = table.querySelectorAll('.exam-date');
                         const daysCells = table.querySelectorAll('.days-left');
                         
-                        nameCells.forEach(cell => { cell.style.width = '45%'; });
-                        dateCells.forEach(cell => { cell.style.width = '30%'; });
-                        daysCells.forEach(cell => { cell.style.width = '25%'; });
+                        nameCells.forEach(cell => { 
+                            cell.style.width = '45%';
+                            cell.style.maxWidth = '45%';
+                        });
+                        
+                        dateCells.forEach(cell => {
+                            cell.style.width = '30%';
+                            cell.style.maxWidth = '30%';
+                        });
+                        
+                        daysCells.forEach(cell => { 
+                            cell.style.width = '25%';
+                            cell.style.maxWidth = '25%';
+                            cell.style.textAlign = 'center';
+                        });
                     }
+                    
+                    // Force caption to full width
+                    const caption = table.querySelector('caption');
+                    if (caption) {
+                        caption.style.width = '100%';
+                        caption.style.boxSizing = 'border-box';
+                    }
+                    
+                    // Force each row to take full width
+                    const rows = table.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        row.style.width = '100%';
+                        row.style.display = 'table-row';
+                    });
                     
                     // Make sure the container is sized correctly
                     const container = table.closest('.table-container');
                     if (container) {
                         container.style.width = '100%';
                         container.style.maxWidth = '100%';
-                        
-                        // For iOS, set explicit table style to prevent gaps
-                        if (isIOS) {
-                            table.style.tableLayout = 'fixed';
-                            table.style.borderCollapse = 'collapse';
-                            
-                            // Force caption to full width
-                            const caption = table.querySelector('caption');
-                            if (caption) {
-                                caption.style.width = '100%';
-                                caption.style.boxSizing = 'border-box';
-                            }
-                            
-                            // Force each row to take full width
-                            const rows = table.querySelectorAll('tr');
-                            rows.forEach(row => {
-                                row.style.width = '100%';
-                                row.style.display = 'table-row';
-                            });
-                        }
+                        container.style.margin = '0 0 20px 0';
+                        container.style.padding = '0';
+                        container.style.boxSizing = 'border-box';
+                        container.style.overflow = 'hidden';
                     }
+                });
+                
+                // Apply special styles for the container
+                const mainContainer = document.querySelector('.container');
+                if (mainContainer) {
+                    mainContainer.style.padding = '10px';
+                    mainContainer.style.boxSizing = 'border-box';
+                    mainContainer.style.width = '100%';
+                    mainContainer.style.maxWidth = '100%';
+                    mainContainer.style.overflow = 'hidden';
+                }
+                
+                // Apply to exam table containers
+                const tableContainers = document.querySelectorAll('.exam-table-container');
+                tableContainers.forEach(container => {
+                    container.style.width = '100%';
+                    container.style.padding = '0';
+                    container.style.margin = '0';
+                    container.style.overflow = 'hidden';
                 });
                 
                 // Also apply the same to chronological table if visible
                 const chronoTable = document.querySelector('.chronological-table');
-                if (chronoTable && chronoTable.style.display !== 'none') {
+                if (chronoTable) {
                     chronoTable.style.width = '100%';
                     chronoTable.style.tableLayout = 'fixed';
                     
-                    if (isIOS) {
-                        // Similar treatment for chronological table rows
-                        const rows = chronoTable.querySelectorAll('tr');
-                        rows.forEach(row => {
-                            row.style.width = '100%';
-                            row.style.display = 'table-row';
-                        });
-                    }
+                    // Similar treatment for chronological table rows
+                    const rows = chronoTable.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        row.style.width = '100%';
+                        row.style.display = 'table-row';
+                    });
                 }
             }
         }
         
         // Check window resize for responsive adjustments
         window.addEventListener('resize', function() {
-            optimizeTablesForMobile();
+            // Only optimize for mobile if we're on a small screen
+            if (window.innerWidth <= 767) {
+                optimizeTablesForMobile();
+            }
         });
         
         // Function to update days left display
@@ -933,8 +1127,8 @@
 
         // Add touch event handling for better mobile experience
         document.addEventListener('DOMContentLoaded', function() {
-            // Detect if device is touch-based
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            // Detect if device is touch-based and on a small screen
+            const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth <= 767;
             
             if (isTouchDevice) {
                 document.body.classList.add('touch-device');
@@ -986,6 +1180,25 @@
                         this.classList.remove('button-active');
                     }, { passive: true });
                 });
+                
+                // Only show iOS install banner on iOS devices with small screens
+                const iosInstallBanner = document.getElementById('ios-install-banner');
+                if (iosInstallBanner && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && window.innerWidth <= 767) {
+                    // Check if the user hasn't closed it before
+                    if (!localStorage.getItem('iosInstallBannerClosed')) {
+                        iosInstallBanner.style.display = 'block';
+                        
+                        // Handle close button
+                        const closeBtn = iosInstallBanner.querySelector('.ios-close-btn');
+                        if (closeBtn) {
+                            closeBtn.addEventListener('click', function() {
+                                iosInstallBanner.style.display = 'none';
+                                // Remember user preference
+                                localStorage.setItem('iosInstallBannerClosed', 'true');
+                            });
+                        }
+                    }
+                }
             }
         });
 
@@ -1838,7 +2051,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Add this after other DOMContentLoaded handlers
             // Enhance touch targets for mobile
-            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            if (('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth <= 767) {
                 // Make the view buttons larger on touch devices
                 const viewButtons = document.querySelectorAll('.view-btn');
                 viewButtons.forEach(button => {
