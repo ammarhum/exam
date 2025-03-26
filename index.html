@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Exam Timetable</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -197,6 +197,7 @@
                 table-layout: fixed;
                 font-size: 14px;
                 border-collapse: collapse;
+                min-width: 100%;
             }
             
             /* Fix for "By Subject" tab on iPhone */
@@ -216,6 +217,7 @@
                 color: white;
                 font-size: 16px;
                 text-align: center;
+                width: 100%;
             }
             
             .subject-table th {
@@ -267,21 +269,24 @@
                 font-weight: bold;
             }
             
-            /* Improve background colors for days left indicators */
+            /* Fixed stronger background colors for days left indicators */
             .days-urgent {
-                background-color: rgba(255, 87, 87, 0.2);
+                background-color: rgba(255, 87, 87, 0.7);
+                color: white;
             }
             
             .days-soon {
-                background-color: rgba(255, 193, 7, 0.2);
+                background-color: rgba(255, 193, 7, 0.7);
             }
             
             .days-upcoming {
-                background-color: rgba(76, 175, 80, 0.2);
+                background-color: rgba(76, 175, 80, 0.7);
+                color: white;
             }
             
             .days-distant {
-                background-color: rgba(33, 150, 243, 0.2);
+                background-color: rgba(33, 150, 243, 0.7);
+                color: white;
             }
             
             .floating-action-buttons {
@@ -327,6 +332,7 @@
                 .subject-table {
                     width: 100%;
                     min-width: 100%;
+                    table-layout: fixed;
                 }
                 
                 /* Fix for truncated table cells */
@@ -339,18 +345,46 @@
                     white-space: nowrap;
                 }
                 
-                /* Prevent elastic scrolling issues */
-                html, body {
-                    position: fixed;
+                /* Prevent elastic scrolling issues - MODIFIED to allow scrolling */
+                html {
                     width: 100%;
-                    height: 100%;
-                    overflow: auto;
+                    -webkit-overflow-scrolling: touch;
+                    overflow-x: hidden;
+                    position: relative;
+                }
+                
+                body {
+                    width: 100%;
+                    overflow-x: hidden;
                     -webkit-overflow-scrolling: touch;
                 }
                 
                 /* Improve tap highlight color */
                 * {
                     -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+                }
+                
+                /* Fix for full width tables */
+                .table-container {
+                    width: 100vw;
+                    max-width: 100vw;
+                    border-radius: 0;
+                    margin-left: -5%;
+                    margin-right: -5%;
+                    padding-left: 5%;
+                    padding-right: 5%;
+                    box-sizing: border-box;
+                }
+                
+                .subject-table {
+                    width: 100%;
+                    max-width: 100%;
+                }
+                
+                /* Ensure all columns take full width */
+                .subject-table tr {
+                    width: 100%;
+                    display: table-row;
                 }
             }
         }
@@ -741,29 +775,75 @@
                 // Check if we're on iOS
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 
-                if (isIOS) {
-                    // Get all subject tables
-                    const tables = document.querySelectorAll('.subject-table');
+                // Get all subject tables
+                const tables = document.querySelectorAll('.subject-table');
+                
+                tables.forEach(table => {
+                    // Force full width
+                    table.style.width = '100%';
                     
-                    tables.forEach(table => {
-                        // Set explicit widths for iOS Safari
-                        const nameHeader = table.querySelector('.exam-name-header');
-                        const dateHeader = table.querySelector('.exam-date-header');
-                        const daysHeader = table.querySelector('.days-left-header');
+                    // Set explicit widths for iOS Safari
+                    const nameHeader = table.querySelector('.exam-name-header');
+                    const dateHeader = table.querySelector('.exam-date-header');
+                    const daysHeader = table.querySelector('.days-left-header');
+                    
+                    if (nameHeader && dateHeader && daysHeader) {
+                        nameHeader.style.width = '45%';
+                        dateHeader.style.width = '30%';
+                        daysHeader.style.width = '25%';
                         
-                        if (nameHeader && dateHeader && daysHeader) {
-                            nameHeader.style.width = '45%';
-                            dateHeader.style.width = '30%';
-                            daysHeader.style.width = '25%';
-                        }
+                        // Apply the same widths to all cells in the columns
+                        const nameCells = table.querySelectorAll('.exam-name');
+                        const dateCells = table.querySelectorAll('.exam-date');
+                        const daysCells = table.querySelectorAll('.days-left');
                         
-                        // Make sure the container is sized correctly
-                        const container = table.closest('.table-container');
-                        if (container) {
-                            container.style.width = '100%';
-                            container.style.maxWidth = '100%';
+                        nameCells.forEach(cell => { cell.style.width = '45%'; });
+                        dateCells.forEach(cell => { cell.style.width = '30%'; });
+                        daysCells.forEach(cell => { cell.style.width = '25%'; });
+                    }
+                    
+                    // Make sure the container is sized correctly
+                    const container = table.closest('.table-container');
+                    if (container) {
+                        container.style.width = '100%';
+                        container.style.maxWidth = '100%';
+                        
+                        // For iOS, set explicit table style to prevent gaps
+                        if (isIOS) {
+                            table.style.tableLayout = 'fixed';
+                            table.style.borderCollapse = 'collapse';
+                            
+                            // Force caption to full width
+                            const caption = table.querySelector('caption');
+                            if (caption) {
+                                caption.style.width = '100%';
+                                caption.style.boxSizing = 'border-box';
+                            }
+                            
+                            // Force each row to take full width
+                            const rows = table.querySelectorAll('tr');
+                            rows.forEach(row => {
+                                row.style.width = '100%';
+                                row.style.display = 'table-row';
+                            });
                         }
-                    });
+                    }
+                });
+                
+                // Also apply the same to chronological table if visible
+                const chronoTable = document.querySelector('.chronological-table');
+                if (chronoTable && chronoTable.style.display !== 'none') {
+                    chronoTable.style.width = '100%';
+                    chronoTable.style.tableLayout = 'fixed';
+                    
+                    if (isIOS) {
+                        // Similar treatment for chronological table rows
+                        const rows = chronoTable.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            row.style.width = '100%';
+                            row.style.display = 'table-row';
+                        });
+                    }
                 }
             }
         }
@@ -906,92 +986,6 @@
                         this.classList.remove('button-active');
                     }, { passive: true });
                 });
-                
-                // Add swipe gesture navigation
-                let touchStartX = 0;
-                let touchEndX = 0;
-                
-                // Add swipe detector to container
-                const container = document.querySelector('.container');
-                
-                container.addEventListener('touchstart', function(e) {
-                    touchStartX = e.changedTouches[0].screenX;
-                }, { passive: true });
-                
-                container.addEventListener('touchend', function(e) {
-                    touchEndX = e.changedTouches[0].screenX;
-                    handleSwipe();
-                }, { passive: true });
-                
-                function handleSwipe() {
-                    const swipeThreshold = 100; // Minimum distance for a swipe
-                    const examView = document.getElementById('exam-view');
-                    const examBtn = document.getElementById('exam-btn');
-                    
-                    // Left swipe - no action needed since we only have one tab
-                    if (touchEndX < touchStartX - swipeThreshold && examView.classList.contains('active')) {
-                        // Add visual feedback but no action
-                        showSwipeIndicator('right');
-                    }
-                    // Right swipe - no action needed
-                    else if (touchEndX > touchStartX + swipeThreshold && examView.classList.contains('active')) {
-                        // Add visual feedback but no action
-                        showSwipeIndicator('left');
-                    }
-                }
-                
-                // Update swipe indicator text
-                function showSwipeIndicator(direction) {
-                    // Create indicator element if it doesn't exist
-                    let indicator = document.querySelector('.swipe-indicator');
-                    if (!indicator) {
-                        indicator = document.createElement('div');
-                        indicator.className = 'swipe-indicator';
-                        indicator.style.position = 'fixed';
-                        indicator.style.top = '50%';
-                        indicator.style.transform = 'translateY(-50%)';
-                        indicator.style.backgroundColor = 'rgba(52, 152, 219, 0.3)';
-                        indicator.style.color = 'white';
-                        indicator.style.padding = '20px';
-                        indicator.style.borderRadius = '10px';
-                        indicator.style.fontWeight = 'bold';
-                        indicator.style.zIndex = '1000';
-                        indicator.style.transition = 'opacity 0.5s ease';
-                        document.body.appendChild(indicator);
-                    }
-                    
-                    // Set direction specific properties - update text to reflect single tab
-                    indicator.style.left = direction === 'left' ? '10px' : 'auto';
-                    indicator.style.right = direction === 'right' ? '10px' : 'auto';
-                    indicator.innerHTML = 'Exams';
-                    
-                    // Show and then hide indicator
-                    indicator.style.opacity = '1';
-                    setTimeout(() => {
-                        indicator.style.opacity = '0';
-                    }, 800);
-                }
-                
-                // Add swipe hints to the page
-                const navButtons = document.querySelector('.nav-buttons');
-                if (navButtons) {
-                    const swipeHint = document.createElement('div');
-                    swipeHint.className = 'swipe-hint';
-                    swipeHint.textContent = 'Swipe left/right to switch views';
-                    swipeHint.style.textAlign = 'center';
-                    swipeHint.style.fontSize = '12px';
-                    swipeHint.style.color = '#999';
-                    swipeHint.style.padding = '5px 0';
-                    swipeHint.style.marginTop = '10px';
-                    navButtons.parentNode.insertBefore(swipeHint, navButtons.nextSibling);
-
-                    setTimeout(() => {
-                        swipeHint.style.opacity = '0';
-                        setTimeout(() => {
-                            swipeHint.style.display = 'none';
-                        }, 500);
-                    }, 5000);
-                }
             }
         });
 
