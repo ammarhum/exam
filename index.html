@@ -2141,130 +2141,65 @@
                     }
                 }
                 
-                // Get the updated references to containers
-                const updatedSubjectsContainer = document.getElementById('subjects-container');
-                const updatedChronologicalContainer = document.getElementById('chronological-container');
-                const updatedCalendarContainer = document.getElementById('calendar-container');
+                // Simple, direct approach to tab switching:
                 
-                // Use a better way to hide containers that works across browsers
-                const hideContainer = (container) => {
-                    if (container) {
-                        container.style.display = 'none';
-                        
-                        // Additional fix for older browsers
-                        container.style.visibility = 'hidden';
-                        container.style.opacity = '0';
-                        container.setAttribute('aria-hidden', 'true');
-                    }
-                };
-                
-                // Use a better way to show containers that works across browsers
-                const showContainer = (container) => {
-                    if (container) {
-                        container.style.display = 'block';
-                        
-                        // Additional fix for older browsers
-                        container.style.visibility = 'visible';
-                        container.style.opacity = '1';
-                        container.setAttribute('aria-hidden', 'false');
-                        
-                        // Ensure container width is 100% on mobile
-                        if (window.innerWidth <= 767 || deviceInfo.isMobile || deviceInfo.isTablet) {
-                            container.style.width = '100%';
-                            container.style.maxWidth = '100%';
-                        }
-                    }
-                };
-                
-                // Hide all containers first - safer approach
-                hideContainer(updatedSubjectsContainer);
-                hideContainer(updatedChronologicalContainer);
-                hideContainer(updatedCalendarContainer);
-                
-                // Remove active class from all buttons with cross-browser compatibility
-                buttons.forEach(function(button) {
-                    button.classList.remove('active');
-                    button.setAttribute('aria-selected', 'false');
+                // 1. Hide all containers
+                document.querySelectorAll('.exam-table-container, .calendar-container').forEach(container => {
+                    container.style.display = 'none';
                 });
                 
-                // Get the button for this tab and make it active
+                // 2. Remove active class from all buttons
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
+                
+                // 3. Add active class to the selected button
                 const activeButton = document.querySelector(`.view-btn[data-view="${tabName}"]`);
                 if (activeButton) {
                     activeButton.classList.add('active');
-                    activeButton.setAttribute('aria-selected', 'true');
                 }
                 
-                // Create a safety flag to prevent double renders
-                let contentRendered = false;
+                // 4. Show the selected container
+                const activeContainer = document.getElementById(tabName + '-container');
+                if (activeContainer) {
+                    activeContainer.style.display = 'block';
+                }
                 
-                // Show the selected container and render content with error handling
+                // 5. Render content as needed
                 if (tabName === 'subjects') {
-                    try {
-                        if (!contentRendered && updatedSubjectsContainer) {
-                            renderSubjects(); // Render content
-                            showContainer(updatedSubjectsContainer); // Show container
-                            contentRendered = true;
-                        }
-                    } catch (error) {
-                        console.error('Error in subjects tab:', error);
-                        showError('There was a problem loading the subjects view. Please try again.');
-                    }
+                    renderSubjects();
                 } else if (tabName === 'chronological') {
-                    try {
-                        if (!contentRendered && updatedChronologicalContainer) {
-                            renderExamsInOrder(); // Render content
-                            showContainer(updatedChronologicalContainer); // Show container
-                            contentRendered = true;
-                        }
-                    } catch (error) {
-                        console.error('Error in chronological tab:', error);
-                        showError('There was a problem loading the chronological view. Please try again.');
-                    }
+                    renderExamsInOrder();
                 } else if (tabName === 'calendar') {
-                    try {
-                        if (!contentRendered && updatedCalendarContainer) {
-                            renderCalendarView(); // Render content
-                            showContainer(updatedCalendarContainer); // Show container
-                            contentRendered = true;
-                        }
-                    } catch (error) {
-                        console.error('Error in calendar tab:', error);
-                        showError('There was a problem loading the calendar view. Please try again.');
-                    }
+                    renderCalendarView();
                 }
                 
-                // Apply mobile optimizations with a slight delay to ensure rendering
-                // is complete before applying optimizations
-                setTimeout(function() {
-                    updateAllViewsForMobile();
-                    
-                    // Additional force redraw for problematic browsers
-                    if (deviceInfo.isIOS || deviceInfo.isSafari) {
-                        document.body.style.zoom = 0.99;
-                        setTimeout(function() {
-                            document.body.style.zoom = 1;
-                        }, 10);
-                    }
-                }, 50);
+                // 6. Apply mobile optimizations after switching
+                setTimeout(updateAllViewsForMobile, 50);
+                
             } catch (error) {
                 console.error('Error in switchToTab:', error);
-                // Fallback to a simpler tab switch implementation if the enhanced one fails
-                const simpleSwitch = (id) => {
+                // Fallback to an even simpler approach
+                try {
+                    // Hide all containers
                     document.querySelectorAll('.exam-table-container, .calendar-container').forEach(c => c.style.display = 'none');
-                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                     
-                    const container = document.getElementById(id);
+                    // Show the selected container
+                    const container = document.getElementById(tabName + '-container');
                     if (container) {
                         container.style.display = 'block';
                     }
                     
+                    // Update active button
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                     const btn = document.querySelector(`.view-btn[data-view="${tabName}"]`);
                     if (btn) {
                         btn.classList.add('active');
                     }
-                };
-                
-                simpleSwitch(tabName + '-container');
+                    
+                } catch (fallbackError) {
+                    console.error('Fallback tab switching also failed:', fallbackError);
+                }
             }
         }
 
@@ -2667,34 +2602,28 @@
             if (isIOS) {
                 console.log('iOS device detected, applying tab switching fixes');
                 
-                // Rest of the function stays the same
                 // Force a redraw of containers when switching tabs on iOS
                 var originalSwitchToTab = switchToTab;
                 switchToTab = function(tabName) {
                     console.log('iOS enhanced tab switching to:', tabName);
                     
-                    // Call original function without the aggressive body hiding
+                    // Call original function for basic tab switching
                     originalSwitchToTab(tabName);
                     
-                    // Additional iOS fixes after switching - directly manipulate the active container
+                    // Additional iOS fixes after switching
                     setTimeout(function() {
-                        var activeContainer;
-                        if (tabName === 'subjects') {
-                            activeContainer = document.getElementById('subjects-container');
-                        } else if (tabName === 'chronological') {
-                            activeContainer = document.getElementById('chronological-container');
-                        } else if (tabName === 'calendar') {
-                            activeContainer = document.getElementById('calendar-container');
-                        }
-                        
+                        var activeContainer = document.getElementById(tabName + '-container');
                         if (activeContainer) {
                             // Force visibility with hardware acceleration
                             activeContainer.style.transform = 'translateZ(0)';
                             activeContainer.style.webkitTransform = 'translateZ(0)';
+                            
+                            // Force redraw for problematic iOS browsers
+                            document.body.style.zoom = 0.99;
+                            setTimeout(function() {
+                                document.body.style.zoom = 1;
+                            }, 10);
                         }
-                        
-                        // Update all views one more time
-                        updateAllViewsForMobile();
                     }, 50);
                 };
             }
