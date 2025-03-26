@@ -1836,77 +1836,104 @@
             // Setup view switching
             const viewButtons = document.querySelectorAll('.view-btn');
             const subjectsContainer = document.getElementById('subjects-container');
+            const chronologicalContainer = document.getElementById('chronological-container');
+            const calendarContainer = document.getElementById('calendar-container');
             
-            // Create the exam view container if it doesn't exist
-            let examView = document.getElementById('exam-view');
-            if (!examView) {
-                examView = document.createElement('div');
-                examView.id = 'exam-view';
-                examView.className = 'active';
-                // Insert it before the subjects container in DOM
-                subjectsContainer.parentNode.insertBefore(examView, subjectsContainer);
-                // Move subjects container into exam view
-                examView.appendChild(subjectsContainer);
-            }
-            
-            // Create containers for other views
-            let chronologicalContainer = document.getElementById('chronological-container');
+            // Fix potential issue with containers not existing
             if (!chronologicalContainer) {
-                chronologicalContainer = document.createElement('div');
-                chronologicalContainer.id = 'chronological-container';
-                chronologicalContainer.className = 'exam-table-container';
-                chronologicalContainer.style.display = 'none';
-                examView.appendChild(chronologicalContainer);
+                const newChronoContainer = document.createElement('div');
+                newChronoContainer.id = 'chronological-container';
+                newChronoContainer.className = 'exam-table-container';
+                newChronoContainer.style.display = 'none';
+                document.querySelector('.exam-table-container').parentNode.appendChild(newChronoContainer);
             }
             
-            let calendarContainer = document.getElementById('calendar-container');
             if (!calendarContainer) {
-                calendarContainer = document.createElement('div');
-                calendarContainer.id = 'calendar-container';
-                calendarContainer.className = 'calendar-container';
-                calendarContainer.style.display = 'none';
-                examView.appendChild(calendarContainer);
+                const newCalendarContainer = document.createElement('div');
+                newCalendarContainer.id = 'calendar-container';
+                newCalendarContainer.className = 'calendar-container';
+                newCalendarContainer.style.display = 'none';
+                document.querySelector('.exam-table-container').parentNode.appendChild(newCalendarContainer);
             }
             
-            // Set up view button click handlers
+            // Enhanced tab switching with both click and touch events
+            function switchTab(viewType) {
+                console.log('Switching to view:', viewType);
+                
+                // Update active button
+                viewButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.view-btn[data-view="${viewType}"]`).classList.add('active');
+                
+                // Get containers
+                const subjectsContainer = document.getElementById('subjects-container');
+                const chronologicalContainer = document.getElementById('chronological-container');
+                const calendarContainer = document.getElementById('calendar-container');
+                
+                if (!subjectsContainer || !chronologicalContainer || !calendarContainer) {
+                    console.error('One or more view containers not found:', 
+                                 !subjectsContainer ? 'subjects' : '', 
+                                 !chronologicalContainer ? 'chronological' : '', 
+                                 !calendarContainer ? 'calendar' : '');
+                    return;
+                }
+                
+                // Hide all containers
+                subjectsContainer.style.display = 'none';
+                chronologicalContainer.style.display = 'none';
+                calendarContainer.style.display = 'none';
+                
+                // Show selected container
+                switch(viewType) {
+                    case 'subjects':
+                        subjectsContainer.style.display = 'block';
+                        // Force mobile optimization
+                        setTimeout(updateAllViewsForMobile, 0);
+                        break;
+                    case 'chronological':
+                        chronologicalContainer.style.display = 'block';
+                        renderExamsInOrder();
+                        // Force mobile optimization after rendering
+                        setTimeout(updateAllViewsForMobile, 10);
+                        break;
+                    case 'calendar':
+                        calendarContainer.style.display = 'block';
+                        renderCalendarView();
+                        // Force mobile optimization after rendering
+                        setTimeout(updateAllViewsForMobile, 10);
+                        break;
+                }
+            }
+            
+            // Set up both click and touchend events for better mobile support
             viewButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    console.log('View button clicked:', this.dataset.view);
-                    
-                    // Update active button
-                    viewButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Get selected view
+                // Remove any existing event listeners
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                
+                // Add new click handler that works on both desktop and mobile
+                newButton.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const viewType = this.dataset.view;
-                    
-                    // Hide all containers
-                    subjectsContainer.style.display = 'none';
-                    chronologicalContainer.style.display = 'none';
-                    calendarContainer.style.display = 'none';
-                    
-                    // Show selected container
-                    switch(viewType) {
-                        case 'subjects':
-                            subjectsContainer.style.display = 'block';
-                            // Force mobile optimization
-                            setTimeout(updateAllViewsForMobile, 0);
-                            break;
-                        case 'chronological':
-                            chronologicalContainer.style.display = 'block';
-                            renderExamsInOrder();
-                            // Force mobile optimization after rendering
-                            setTimeout(updateAllViewsForMobile, 10);
-                            break;
-                        case 'calendar':
-                            calendarContainer.style.display = 'block';
-                            renderCalendarView();
-                            // Force mobile optimization after rendering
-                            setTimeout(updateAllViewsForMobile, 10);
-                            break;
-                    }
+                    switchTab(viewType);
                 });
+                
+                // Add touch handler specifically for mobile
+                newButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    const viewType = this.dataset.view;
+                    switchTab(viewType);
+                }, { passive: false });
             });
+            
+            // Make sure initial view is set correctly
+            const activeViewBtn = document.querySelector('.view-btn.active');
+            if (activeViewBtn) {
+                const initialView = activeViewBtn.dataset.view;
+                switchTab(initialView);
+            } else {
+                // Default to subjects if no active button
+                switchTab('subjects');
+            }
         });
         
         // Implement calendar view rendering
