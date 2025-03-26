@@ -8,31 +8,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&display=swap" rel="stylesheet">
-    <!-- Add Confetti.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
     <!-- Add meta tags for SEO -->
     <meta name="description" content="Exam Timetable for Cairo">
     <meta name="keywords" content="Exam Timetable, Cairo">
     <meta name="author" content="ammar">
     
-    <!-- PWA Support -->
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#2c3e50">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png">
-    
-    <!-- iOS specific PWA meta tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Exams">
-    
-    <!-- iOS splash screens -->
-    <link rel="apple-touch-startup-image" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)">
-    <link rel="apple-touch-startup-image" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
-    <link rel="apple-touch-startup-image" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)">
-    <link rel="apple-touch-startup-image" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
-    <link rel="apple-touch-startup-image" href="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)">
-
     <!-- External CSS -->
     <link rel="stylesheet" href="./styles.css">
     <style>
@@ -478,14 +459,6 @@
     </style>
 </head>
 <body>
-    <!-- iOS Install Banner -->
-    <div id="ios-install-banner" class="ios-install-banner">
-        <div class="ios-install-content">
-            <span class="ios-close-btn" onclick="document.getElementById('ios-install-banner').style.display='none';">×</span>
-            <p><strong>Install this app on your iPhone:</strong> Tap <span class="ios-share-icon">↑</span> then "Add to Home Screen"</p>
-        </div>
-    </div>
-    
     <!-- Add splash screen -->
     <div class="splash-screen" id="splash-screen">
         <img src="https://cdn-icons-png.flaticon.com/512/3771/3771417.png" alt="App Logo" class="splash-logo">
@@ -535,8 +508,6 @@
 
     <footer>
         <p id="footer-text">Exam Timetable &copy; 2025</p>
-        <!-- Only show for developers - make sure it's hidden by default -->
-        <button class="confetti-test-btn" id="test-confetti" style="display: none;">Test Animation</button>
     </footer>
 
     <script>
@@ -963,11 +934,12 @@
         
         // Function to optimize tables for mobile display
         function optimizeTablesForMobile() {
-            // Detect iOS for special handling
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            // Use the improved iOS detection
+            const isIOS = isIOSDevice();
             
             // Apply mobile optimizations when on a small screen or iOS device
             if (window.innerWidth <= 767 || isIOS) {
+                // Rest of the function stays the same
                 // Get all subject tables
                 const tables = document.querySelectorAll('.subject-table');
                 
@@ -1191,10 +1163,25 @@
             }
         }
         
+        // Improved iOS detection that combines user agent and feature detection
+        function isIOSDevice() {
+            // Primary check using user agent
+            const ua = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            // Secondary check using platform
+            const platform = /iPad|iPhone|iPod/.test(navigator.platform);
+            
+            // Fallback for iOS 13+ using feature detection
+            const isStandalone = window.navigator.standalone === true;
+            const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1;
+            
+            return ua || platform || (isStandalone && isSafari) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform));
+        }
+        
         // Check window resize for responsive adjustments
         window.addEventListener('resize', function() {
-            // Detect iOS for special handling
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            // Use improved iOS detection
+            const isIOS = isIOSDevice();
             
             // Optimize for mobile or iOS
             if (window.innerWidth <= 767 || isIOS) {
@@ -1208,8 +1195,8 @@
             optimizeTablesForMobile();
             
             // Apply additional mobile-specific adjustments
-            var isMobile = window.innerWidth <= 480;
-            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            var isMobile = window.innerWidth <= 767;
+            var isIOS = isIOSDevice();
             
             if (isMobile || isIOS) {
                 // Ensure tables take full width
@@ -1364,110 +1351,7 @@
                         this.classList.remove('button-active');
                     }, { passive: true });
                 });
-                
-                // Only show iOS install banner on iOS devices with small screens
-                const iosInstallBanner = document.getElementById('ios-install-banner');
-                if (iosInstallBanner && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && window.innerWidth <= 767) {
-                    // Check if the user hasn't closed it before
-                    if (!localStorage.getItem('iosInstallBannerClosed')) {
-                        iosInstallBanner.style.display = 'block';
-                        
-                        // Handle close button
-                        const closeBtn = iosInstallBanner.querySelector('.ios-close-btn');
-                        if (closeBtn) {
-                            closeBtn.addEventListener('click', function() {
-                                iosInstallBanner.style.display = 'none';
-                                // Remember user preference
-                                localStorage.setItem('iosInstallBannerClosed', 'true');
-                            });
-                        }
-                    }
-                }
             }
-        });
-
-        // Add test button for confetti (for development only)
-        document.addEventListener('DOMContentLoaded', function() {
-            const testBtn = document.getElementById('test-confetti');
-            if (testBtn) {
-                // Hide the button completely by default
-                testBtn.style.display = 'none';
-                testBtn.classList.add('hidden-dev-button');
-                
-                // Only show if URL has ?dev=1 parameter explicitly
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('dev') === '1') {
-                    console.log('Development mode active');
-                    testBtn.classList.remove('hidden-dev-button');
-                    // Still use inline style as additional protection
-                    testBtn.style.display = 'inline-block';
-                    
-                    testBtn.addEventListener('click', function() {
-                        triggerBirthdayConfetti();
-                        document.querySelector('.countdown-container').classList.add('birthday-mode');
-                        document.getElementById('countdown').textContent = "Happy Birthday! 🎉";
-                        setTimeout(() => {
-                            document.querySelector('.countdown-container').classList.remove('birthday-mode');
-                            updateBirthdayCountdown();
-                        }, 10000);
-                    });
-                }
-            }
-        });
-
-        // Add PWA registration script
-        document.addEventListener('DOMContentLoaded', function() {
-            // Register Service Worker for PWA support only when not running on file protocol
-            if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
-                window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('./service-worker.js')
-                    .then(function(registration) {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch(function(error) {
-                        console.log('Service Worker registration failed:', error);
-                    });
-                });
-            } else {
-                console.log('Service Worker not registered: Running on file:// protocol or browser does not support Service Workers');
-            }
-            
-            // Add installation prompt handling
-            let deferredPrompt;
-            const installBtn = document.createElement('button');
-            installBtn.id = 'install-btn';
-            installBtn.textContent = 'Install App';
-            installBtn.classList.add('nav-btn');
-            
-            window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent Chrome 76+ from automatically showing the prompt
-                e.preventDefault();
-                // Stash the event so it can be triggered later
-                deferredPrompt = e;
-                // Add the install button to the navigation
-                const navButtons = document.querySelector('.nav-buttons');
-                installBtn.style.display = 'block';
-                navButtons.appendChild(installBtn);
-                
-                // Add click handler for the install button
-                installBtn.addEventListener('click', async () => {
-                    // Show the install prompt
-                    deferredPrompt.prompt();
-                    // Wait for the user to respond to the prompt
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`User response to the install prompt: ${outcome}`);
-                    // Hide the install button
-                    installBtn.style.display = 'none';
-                    // Clear the deferredPrompt variable
-                    deferredPrompt = null;
-                });
-            });
-            
-            // Hide the install button when the app is installed
-            window.addEventListener('appinstalled', (evt) => {
-                console.log('Application was installed.');
-                installBtn.style.display = 'none';
-            });
         });
 
         // Add search functionality to the exam view
@@ -1701,20 +1585,6 @@
             };
         });
 
-        // Fix for manifest.json error - Handle CORS issues
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if we're running from file protocol and give a helpful message
-            if (window.location.protocol === 'file:') {
-                console.warn('Running from file:// protocol. For full functionality including PWA features, please use a web server.');
-                
-                // Remove manifest link to prevent CORS errors
-                const manifestLink = document.querySelector('link[rel="manifest"]');
-                if (manifestLink && manifestLink.parentNode) {
-                    manifestLink.parentNode.removeChild(manifestLink);
-                }
-            }
-        });
-
         function initializeApp() {
             console.log('App initialized');
             
@@ -1731,7 +1601,7 @@
             }
             
             // Check if we're on iOS and apply fixes
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isIOS = isIOSDevice();
             if (isIOS) {
                 console.log('iOS device detected, applying specific fixes');
                 
@@ -2293,12 +2163,13 @@
 
         // Add specific handling for iOS Safari tab switching issues
         document.addEventListener('DOMContentLoaded', function() {
-            // Detect iOS specifically
-            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            // Use improved iOS detection
+            var isIOS = isIOSDevice();
             
             if (isIOS) {
                 console.log('iOS device detected, applying tab switching fixes');
                 
+                // Rest of the function stays the same
                 // Force a redraw of containers when switching tabs on iOS
                 var originalSwitchToTab = switchToTab;
                 switchToTab = function(tabName) {
@@ -2332,5 +2203,4 @@
         });
     </script>
 </body>
-</html>
 </html>
