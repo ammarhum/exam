@@ -1731,7 +1731,8 @@
             }
             
             // Check if we're on iOS and apply fixes
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            if (isIOS) {
                 console.log('iOS device detected, applying specific fixes');
                 
                 // Add iOS-specific class to body
@@ -1747,25 +1748,64 @@
                 window.addEventListener('resize', fixIOSHeight);
                 window.addEventListener('orientationchange', fixIOSHeight);
                 
+                // Force proper rendering on iOS by adding specific styles
+                document.getElementById('exam-view').style.width = '100%';
+                document.getElementById('exam-view').style.display = 'block';
+                
                 // Enable momentum scrolling on containers
                 const scrollContainers = document.querySelectorAll('.exam-table-container, .calendar-container');
                 scrollContainers.forEach(container => {
                     container.style.webkitOverflowScrolling = 'touch';
                 });
             }
+            
+            // Make sure all containers exist before initializing
+            var examView = document.getElementById('exam-view');
+            if (!examView) {
+                examView = document.createElement('div');
+                examView.id = 'exam-view';
+                document.querySelector('.container').appendChild(examView);
+            }
+            
+            var subjectsContainer = document.getElementById('subjects-container');
+            if (!subjectsContainer) {
+                subjectsContainer = document.createElement('div');
+                subjectsContainer.id = 'subjects-container';
+                subjectsContainer.className = 'exam-table-container';
+                examView.appendChild(subjectsContainer);
+            }
+            
+            var chronologicalContainer = document.getElementById('chronological-container');
+            if (!chronologicalContainer) {
+                chronologicalContainer = document.createElement('div');
+                chronologicalContainer.id = 'chronological-container';
+                chronologicalContainer.className = 'exam-table-container';
+                chronologicalContainer.style.display = 'none';
+                examView.appendChild(chronologicalContainer);
+            }
+            
+            var calendarContainer = document.getElementById('calendar-container');
+            if (!calendarContainer) {
+                calendarContainer = document.createElement('div');
+                calendarContainer.id = 'calendar-container';
+                calendarContainer.className = 'calendar-container';
+                calendarContainer.style.display = 'none';
+                examView.appendChild(calendarContainer);
+            }
 
-            // Render subjects
+            // Render subjects first - this must be done before switching tabs
+            console.log('Rendering subjects...');
             renderSubjects();
-            console.log('Subjects rendered');
-
+            
             // Update all days left
+            console.log('Updating days left...');
             updateAllDaysLeft();
-            console.log('Days left updated');
             
             // Run optimization after a short delay to ensure DOM is fully rendered
-            setTimeout(optimizeTablesForMobile, 100);
+            setTimeout(optimizeTablesForMobile, 200);
             
-            // Initialize active tab with the new function instead of clicking buttons
+            // Initialize active tab with the new function - use a longer delay
+            // to ensure everything is properly rendered first
             setTimeout(function() {
                 var activeButton = document.querySelector('.view-btn.active');
                 if (activeButton) {
@@ -1773,20 +1813,59 @@
                     switchToTab(activeButton.getAttribute('data-view'));
                 } else {
                     console.log('No active button found, defaulting to subjects');
+                    // Force active class on subjects button first
+                    document.getElementById('subjects-btn').classList.add('active');
                     switchToTab('subjects');
                 }
-            }, 200);
+            }, 800); // Longer timeout to ensure everything is loaded
         }
 
         // Complete rewrite of tab switching functionality - old-school JS approach
         function switchToTab(tabName) {
+            console.log('Switching to tab:', tabName);
+            
             // Get all view buttons and containers
             var buttons = document.querySelectorAll('.view-btn');
             var subjectsContainer = document.getElementById('subjects-container');
             var chronologicalContainer = document.getElementById('chronological-container');
             var calendarContainer = document.getElementById('calendar-container');
             
-            // Hide all containers first
+            // Ensure all containers exist to prevent errors
+            if (!subjectsContainer || !chronologicalContainer || !calendarContainer) {
+                console.error('Tab containers not found, creating them');
+                
+                // Ensure exam-view exists
+                var examView = document.getElementById('exam-view');
+                if (!examView) {
+                    examView = document.createElement('div');
+                    examView.id = 'exam-view';
+                    document.querySelector('.container').appendChild(examView);
+                }
+                
+                // Create any missing containers
+                if (!subjectsContainer) {
+                    subjectsContainer = document.createElement('div');
+                    subjectsContainer.id = 'subjects-container';
+                    subjectsContainer.className = 'exam-table-container';
+                    examView.appendChild(subjectsContainer);
+                }
+                
+                if (!chronologicalContainer) {
+                    chronologicalContainer = document.createElement('div');
+                    chronologicalContainer.id = 'chronological-container';
+                    chronologicalContainer.className = 'exam-table-container';
+                    examView.appendChild(chronologicalContainer);
+                }
+                
+                if (!calendarContainer) {
+                    calendarContainer = document.createElement('div');
+                    calendarContainer.id = 'calendar-container';
+                    calendarContainer.className = 'calendar-container';
+                    examView.appendChild(calendarContainer);
+                }
+            }
+            
+            // Hide all containers first - simpler approach
             if (subjectsContainer) subjectsContainer.style.display = 'none';
             if (chronologicalContainer) chronologicalContainer.style.display = 'none';
             if (calendarContainer) calendarContainer.style.display = 'none';
@@ -1802,45 +1881,56 @@
                 activeButton.classList.add('active');
             }
             
-            // Show the selected container
+            // Show the selected container and render content
             if (tabName === 'subjects') {
                 if (subjectsContainer) {
-                    subjectsContainer.style.display = 'block';
-                    renderSubjects();
+                    renderSubjects(); // Render content
+                    subjectsContainer.style.display = 'block'; // Show container
                 }
             } else if (tabName === 'chronological') {
                 if (chronologicalContainer) {
-                    chronologicalContainer.style.display = 'block';
-                    renderExamsInOrder();
+                    renderExamsInOrder(); // Render content
+                    chronologicalContainer.style.display = 'block'; // Show container
                 }
             } else if (tabName === 'calendar') {
                 if (calendarContainer) {
-                    calendarContainer.style.display = 'block';
-                    renderCalendarView();
+                    renderCalendarView(); // Render content
+                    calendarContainer.style.display = 'block'; // Show container
                 }
             }
             
             // Apply mobile optimizations
-            setTimeout(function() {
-                updateAllViewsForMobile();
-            }, 10);
+            updateAllViewsForMobile();
         }
         
         // Set up the click handlers when the DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             var buttons = document.querySelectorAll('.view-btn');
             
-            // Add click and touchstart handlers to each button
+            // Simple approach that works across all devices
             for (var i = 0; i < buttons.length; i++) {
-                buttons[i].addEventListener('click', function() {
+                buttons[i].addEventListener('click', function(e) {
+                    // Get data-view attribute directly from the clicked element
                     var tabName = this.getAttribute('data-view');
-                    switchToTab(tabName);
+                    if (tabName) {
+                        // Only switch if not already active
+                        if (!this.classList.contains('active')) {
+                            switchToTab(tabName);
+                        }
+                    }
                 });
-                buttons[i].addEventListener('touchstart', function() {
-                    var tabName = this.getAttribute('data-view');
-                    switchToTab(tabName);
-                }, { passive: true });
             }
+            
+            // Add specific styles to improve touch interaction
+            var touchStyle = document.createElement('style');
+            touchStyle.textContent = `
+                .view-btn {
+                    -webkit-tap-highlight-color: rgba(0,0,0,0);
+                    touch-action: manipulation;
+                    cursor: pointer;
+                }
+            `;
+            document.head.appendChild(touchStyle);
             
             // Initialize with the active tab or default to subjects
             setTimeout(function() {
@@ -1849,9 +1939,10 @@
                     var activeTabName = activeButton.getAttribute('data-view');
                     switchToTab(activeTabName);
                 } else {
+                    document.getElementById('subjects-btn').classList.add('active');
                     switchToTab('subjects');
                 }
-            }, 300);
+            }, 500); // Delay to ensure DOM is ready
         });
         
         // Legacy switchTab function for backward compatibility
@@ -2199,6 +2290,47 @@
                 saveMessage.classList.remove('show');
             }, 3000);
         }
+
+        // Add specific handling for iOS Safari tab switching issues
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detect iOS specifically
+            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            if (isIOS) {
+                console.log('iOS device detected, applying tab switching fixes');
+                
+                // Force a redraw of containers when switching tabs on iOS
+                var originalSwitchToTab = switchToTab;
+                switchToTab = function(tabName) {
+                    console.log('iOS enhanced tab switching to:', tabName);
+                    
+                    // Call original function without the aggressive body hiding
+                    originalSwitchToTab(tabName);
+                    
+                    // Additional iOS fixes after switching - directly manipulate the active container
+                    setTimeout(function() {
+                        var activeContainer;
+                        if (tabName === 'subjects') {
+                            activeContainer = document.getElementById('subjects-container');
+                        } else if (tabName === 'chronological') {
+                            activeContainer = document.getElementById('chronological-container');
+                        } else if (tabName === 'calendar') {
+                            activeContainer = document.getElementById('calendar-container');
+                        }
+                        
+                        if (activeContainer) {
+                            // Force visibility with hardware acceleration
+                            activeContainer.style.transform = 'translateZ(0)';
+                            activeContainer.style.webkitTransform = 'translateZ(0)';
+                        }
+                        
+                        // Update all views one more time
+                        updateAllViewsForMobile();
+                    }, 50);
+                };
+            }
+        });
     </script>
 </body>
+</html>
 </html>
