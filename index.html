@@ -508,21 +508,16 @@
         
         <!-- Add view options -->
         <div class="view-options">
-            <button class="view-btn active" data-view="subjects" onclick="switchTab('subjects')">By Subject</button>
-            <button class="view-btn" data-view="chronological" onclick="switchTab('chronological')">Chronological</button>
-            <button class="view-btn" data-view="calendar" onclick="switchTab('calendar')">Calendar</button>
+            <button class="view-btn active" id="subjects-btn" data-view="subjects">By Subject</button>
+            <button class="view-btn" id="chronological-btn" data-view="chronological">Chronological</button>
+            <button class="view-btn" id="calendar-btn" data-view="calendar">Calendar</button>
         </div>
         
-        <div class="exam-table-container" id="subjects-container">
-            <!-- Subject tables will be generated here -->
-        </div>
-
-        <div class="exam-table-container" id="chronological-container" style="display: none;">
-            <!-- Chronological tables will be generated here -->
-        </div>
-
-        <div class="calendar-container" id="calendar-container" style="display: none;">
-            <!-- Calendar will be generated here -->
+        <!-- Create a single container to hold all views -->
+        <div id="exam-view">
+            <div class="exam-table-container" id="subjects-container"></div>
+            <div class="exam-table-container" id="chronological-container" style="display: none;"></div>
+            <div class="calendar-container" id="calendar-container" style="display: none;"></div>
         </div>
 
         <!-- Controls section -->
@@ -545,56 +540,6 @@
     </footer>
 
     <script>
-        // Emergency helper to fix tabs on mobile devices
-        window.onload = function() {
-            setTimeout(function() {
-                console.log("EMERGENCY TAB FIX RUNNING");
-                
-                // Make sure all tab containers exist
-                const containers = {
-                    'subjects': document.getElementById('subjects-container'),
-                    'chronological': document.getElementById('chronological-container'),
-                    'calendar': document.getElementById('calendar-container')
-                };
-                
-                // Check which ones are missing and create them
-                for (const [name, container] of Object.entries(containers)) {
-                    if (!container) {
-                        console.log("Creating missing container:", name);
-                        const newContainer = document.createElement('div');
-                        newContainer.id = name + '-container';
-                        newContainer.className = name === 'calendar' ? 'calendar-container' : 'exam-table-container';
-                        newContainer.style.display = 'none';
-                        document.querySelector('.container').appendChild(newContainer);
-                    }
-                }
-                
-                // Make sure all buttons have onclick handlers
-                document.querySelectorAll('.view-btn').forEach(function(btn) {
-                    const tabName = btn.getAttribute('data-view');
-                    if (!btn.onclick) {
-                        console.log("Adding missing onclick to button:", tabName);
-                        btn.onclick = function() {
-                            switchTab(tabName);
-                        };
-                    }
-                });
-                
-                // Find the active button and switch to that tab
-                const activeBtn = document.querySelector('.view-btn.active');
-                if (activeBtn) {
-                    const activeTabName = activeBtn.getAttribute('data-view');
-                    console.log("Switching to active tab:", activeTabName);
-                    switchTab(activeTabName);
-                } else {
-                    // No active button, default to subjects
-                    console.log("No active button found, defaulting to subjects");
-                    document.querySelector('.view-btn[data-view="subjects"]').classList.add('active');
-                    switchTab('subjects');
-                }
-            }, 1000); // Wait a full second to make sure everything is loaded
-        };
-
         // Initialize global variables first to prevent reference errors
         let exams = {};
         
@@ -1809,16 +1754,6 @@
                 });
             }
 
-            // Create view containers if they don't exist
-            createViewContainers();
-
-            // Check if the subjects container exists
-            const subjectsContainer = document.getElementById('subjects-container');
-            if (!subjectsContainer) {
-                console.error('Subjects container not found');
-                return;
-            }
-
             // Render subjects
             renderSubjects();
             console.log('Subjects rendered');
@@ -1830,104 +1765,94 @@
             // Run optimization after a short delay to ensure DOM is fully rendered
             setTimeout(optimizeTablesForMobile, 100);
             
-            // Initialize the active tab based on the active class
-            const activeBtn = document.querySelector('.view-btn.active');
-            if (activeBtn) {
-                const activeTab = activeBtn.getAttribute('data-view');
-                console.log('Setting initial active tab:', activeTab);
-                
-                // Use a timeout to ensure DOM is ready
-                setTimeout(function() {
-                    switchTab(activeTab);
-                }, 200);
-            }
-        }
-
-        // Helper function to create view containers
-        function createViewContainers() {
-            const subjectsContainer = document.getElementById('subjects-container');
-            if (!subjectsContainer) return;
-            
-            // Create containers for other views if they don't exist
-            let chronologicalContainer = document.getElementById('chronological-container');
-            if (!chronologicalContainer) {
-                chronologicalContainer = document.createElement('div');
-                chronologicalContainer.id = 'chronological-container';
-                chronologicalContainer.className = 'exam-table-container';
-                chronologicalContainer.style.display = 'none';
-                subjectsContainer.parentNode.appendChild(chronologicalContainer);
-            }
-            
-            let calendarContainer = document.getElementById('calendar-container');
-            if (!calendarContainer) {
-                calendarContainer = document.createElement('div');
-                calendarContainer.id = 'calendar-container';
-                calendarContainer.className = 'calendar-container';
-                calendarContainer.style.display = 'none';
-                subjectsContainer.parentNode.appendChild(calendarContainer);
-            }
-        }
-
-        // Add the missing showSaveMessage function
-        function showSaveMessage(message, isError = false) {
-            // Check if message element exists
-            let saveMessage = document.querySelector('.save-message');
-            
-            if (!saveMessage) {
-                // Create message element if it doesn't exist
-                saveMessage = document.createElement('div');
-                saveMessage.className = 'save-message';
-                document.body.appendChild(saveMessage);
-            }
-            
-            // Set message and show
-            saveMessage.textContent = message;
-            
-            // Add error class if needed
-            if (isError) {
-                saveMessage.classList.add('error');
-            } else {
-                saveMessage.classList.remove('error');
-            }
-            
-            // Show message with animation
-            saveMessage.classList.add('show');
-            
-            // Hide after delay
-            setTimeout(() => {
-                saveMessage.classList.remove('show');
-            }, 3000);
-        }
-
-        // Simplified tab switching function
-        function switchTab(tabName) {
-            // 1. Update active button status
-            var buttons = document.querySelectorAll('.view-btn');
-            for (var i = 0; i < buttons.length; i++) {
-                if (buttons[i].getAttribute('data-view') === tabName) {
-                    buttons[i].classList.add('active');
+            // Initialize active tab with the new function instead of clicking buttons
+            setTimeout(function() {
+                var activeButton = document.querySelector('.view-btn.active');
+                if (activeButton) {
+                    console.log('Setting initial active tab:', activeButton.getAttribute('data-view'));
+                    switchToTab(activeButton.getAttribute('data-view'));
                 } else {
-                    buttons[i].classList.remove('active');
+                    console.log('No active button found, defaulting to subjects');
+                    switchToTab('subjects');
+                }
+            }, 200);
+        }
+
+        // Complete rewrite of tab switching functionality - old-school JS approach
+        function switchToTab(tabName) {
+            // Get all view buttons and containers
+            var buttons = document.querySelectorAll('.view-btn');
+            var subjectsContainer = document.getElementById('subjects-container');
+            var chronologicalContainer = document.getElementById('chronological-container');
+            var calendarContainer = document.getElementById('calendar-container');
+            
+            // Hide all containers first
+            if (subjectsContainer) subjectsContainer.style.display = 'none';
+            if (chronologicalContainer) chronologicalContainer.style.display = 'none';
+            if (calendarContainer) calendarContainer.style.display = 'none';
+            
+            // Remove active class from all buttons
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            // Get the button for this tab and make it active
+            var activeButton = document.querySelector('.view-btn[data-view="' + tabName + '"]');
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            // Show the selected container
+            if (tabName === 'subjects') {
+                if (subjectsContainer) {
+                    subjectsContainer.style.display = 'block';
+                    renderSubjects();
+                }
+            } else if (tabName === 'chronological') {
+                if (chronologicalContainer) {
+                    chronologicalContainer.style.display = 'block';
+                    renderExamsInOrder();
+                }
+            } else if (tabName === 'calendar') {
+                if (calendarContainer) {
+                    calendarContainer.style.display = 'block';
+                    renderCalendarView();
                 }
             }
             
-            // 2. Hide all containers
-            document.getElementById('subjects-container').style.display = 'none';
-            document.getElementById('chronological-container').style.display = 'none';
-            document.getElementById('calendar-container').style.display = 'none';
+            // Apply mobile optimizations
+            setTimeout(function() {
+                updateAllViewsForMobile();
+            }, 10);
+        }
+        
+        // Set up the click handlers when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            var buttons = document.querySelectorAll('.view-btn');
             
-            // 3. Show selected container
-            document.getElementById(tabName + '-container').style.display = 'block';
-            
-            // 4. Render content as needed
-            if (tabName === 'chronological') {
-                renderExamsInOrder();
-            } else if (tabName === 'calendar') {
-                renderCalendarView();
+            // Add click handler to each button
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener('click', function() {
+                    var tabName = this.getAttribute('data-view');
+                    switchToTab(tabName);
+                });
             }
             
-            // 5. Apply mobile optimization
-            setTimeout(updateAllViewsForMobile, 10);
+            // Initialize with the active tab or default to subjects
+            setTimeout(function() {
+                var activeButton = document.querySelector('.view-btn.active');
+                if (activeButton) {
+                    var activeTabName = activeButton.getAttribute('data-view');
+                    switchToTab(activeTabName);
+                } else {
+                    switchToTab('subjects');
+                }
+            }, 300);
+        });
+        
+        // Legacy switchTab function for backward compatibility
+        function switchTab(tabName) {
+            switchToTab(tabName);
         }
 
         // Implement calendar view rendering
@@ -2238,6 +2163,37 @@
                     calendarContainer.innerHTML = '<div class="error-message" style="color: red; padding: 15px; text-align: center;">Error rendering calendar view. Please try refreshing the page.</div>';
                 }
             }
+        }
+
+        // Add the missing showSaveMessage function
+        function showSaveMessage(message, isError = false) {
+            // Check if message element exists
+            let saveMessage = document.querySelector('.save-message');
+            
+            if (!saveMessage) {
+                // Create message element if it doesn't exist
+                saveMessage = document.createElement('div');
+                saveMessage.className = 'save-message';
+                document.body.appendChild(saveMessage);
+            }
+            
+            // Set message and show
+            saveMessage.textContent = message;
+            
+            // Add error class if needed
+            if (isError) {
+                saveMessage.classList.add('error');
+            } else {
+                saveMessage.classList.remove('error');
+            }
+            
+            // Show message with animation
+            saveMessage.classList.add('show');
+            
+            // Hide after delay
+            setTimeout(() => {
+                saveMessage.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>
