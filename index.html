@@ -1830,12 +1830,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             var buttons = document.querySelectorAll('.view-btn');
             
-            // Add click handler to each button
+            // Add click and touchstart handlers to each button
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].addEventListener('click', function() {
                     var tabName = this.getAttribute('data-view');
                     switchToTab(tabName);
                 });
+                buttons[i].addEventListener('touchstart', function() {
+                    var tabName = this.getAttribute('data-view');
+                    switchToTab(tabName);
+                }, { passive: true });
             }
             
             // Initialize with the active tab or default to subjects
