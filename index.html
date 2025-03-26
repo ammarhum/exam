@@ -557,8 +557,8 @@
         }
 
         // Initialize exams
-        exams = defaultExams;
-
+            exams = defaultExams;
+            
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize only once with a flag
             if (!window.appInitialized) {
@@ -929,6 +929,17 @@
                 setTimeout(optimizeTablesForMobile, 0);
             } catch (error) {
                 console.error('Error rendering subjects:', error);
+                // Create fallback UI in case of error
+                const subjectsContainer = document.getElementById('subjects-container');
+                if (subjectsContainer) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'error-message';
+                    errorMsg.textContent = 'There was a problem displaying subjects. Please refresh the page.';
+                    errorMsg.style.color = 'red';
+                    errorMsg.style.padding = '15px';
+                    errorMsg.style.textAlign = 'center';
+                    subjectsContainer.appendChild(errorMsg);
+                }
             }
         }
         
@@ -1165,56 +1176,241 @@
         
         // Improved iOS detection that combines user agent and feature detection
         function isIOSDevice() {
-            // Primary check using user agent
-            const ua = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            
-            // Secondary check using platform
-            const platform = /iPad|iPhone|iPod/.test(navigator.platform);
-            
-            // Fallback for iOS 13+ using feature detection
-            const isStandalone = window.navigator.standalone === true;
-            const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1;
-            
-            return ua || platform || (isStandalone && isSafari) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform));
+            try {
+                // Primary check using user agent
+                const ua = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                
+                // Secondary check using platform
+                const platform = /iPad|iPhone|iPod/.test(navigator.platform);
+                
+                // Fallback for iOS 13+ using feature detection
+                const isStandalone = window.navigator.standalone === true;
+                const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1;
+                
+                // Additional check for iOS 15+ which might have different UA strings
+                const maxTouchPointCheck = navigator.maxTouchPoints && navigator.maxTouchPoints > 1 && /MacIntel/.test(navigator.platform);
+                
+                return ua || platform || (isStandalone && isSafari) || maxTouchPointCheck;
+            } catch (e) {
+                // Fallback if any detection method fails
+                console.log('iOS detection failed:', e);
+                return /iPhone|iPad|iPod/i.test(navigator.userAgent || navigator.vendor || window.opera);
+            }
         }
+        
+        // Comprehensive device and browser detection utility
+        function detectDevice() {
+            const deviceInfo = {
+                isMobile: false,
+                isTablet: false,
+                isDesktop: true,
+                isIOS: false,
+                isAndroid: false,
+                isSafari: false,
+                isChrome: false,
+                isFirefox: false,
+                isEdge: false,
+                isIE: false,
+                supportsGrid: false,
+                supportsFlexbox: false
+            };
+            
+            try {
+                // Check for mobile/tablet
+                const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                
+                // Mobile detection
+                if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(userAgent) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(userAgent.substr(0, 4))) {
+                    deviceInfo.isMobile = true;
+                    deviceInfo.isDesktop = false;
+                }
+                
+                // Tablet detection
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i.test(userAgent)) {
+                    deviceInfo.isTablet = true;
+                    deviceInfo.isDesktop = false;
+                    deviceInfo.isMobile = false;
+                }
+                
+                // OS detection
+                deviceInfo.isIOS = isIOSDevice();
+                deviceInfo.isAndroid = /Android/i.test(userAgent);
+                
+                // Browser detection
+                deviceInfo.isChrome = /Chrome/i.test(userAgent) && !/Edge/i.test(userAgent);
+                deviceInfo.isFirefox = /Firefox/i.test(userAgent);
+                deviceInfo.isEdge = /Edge/i.test(userAgent);
+                deviceInfo.isSafari = /Safari/i.test(userAgent) && !/Chrome/i.test(userAgent);
+                deviceInfo.isIE = /MSIE|Trident/i.test(userAgent);
+                
+                // Feature detection
+                // Check for CSS Grid support
+                deviceInfo.supportsGrid = window.CSS && CSS.supports && (
+                    CSS.supports('display', 'grid') || 
+                    CSS.supports('display', '-ms-grid')
+                );
+                
+                // Check for flexbox support
+                deviceInfo.supportsFlexbox = window.CSS && CSS.supports && (
+                    CSS.supports('display', 'flex') || 
+                    CSS.supports('display', '-webkit-flex')
+                );
+                
+                // Add window width and height
+                deviceInfo.windowWidth = window.innerWidth;
+                deviceInfo.windowHeight = window.innerHeight;
+                deviceInfo.pixelRatio = window.devicePixelRatio || 1;
+                
+                return deviceInfo;
+            } catch (e) {
+                console.error('Error in device detection:', e);
+                return {
+                    isMobile: window.innerWidth <= 767,
+                    isTablet: window.innerWidth > 767 && window.innerWidth <= 1024,
+                    isDesktop: window.innerWidth > 1024,
+                    isIOS: isIOSDevice(),
+                    isAndroid: false
+                };
+            }
+        }
+        
+        // Get device info once on load
+        const deviceInfo = detectDevice();
         
         // Check window resize for responsive adjustments
         window.addEventListener('resize', function() {
-            // Use improved iOS detection
-            const isIOS = isIOSDevice();
-            
-            // Optimize for mobile or iOS
-            if (window.innerWidth <= 767 || isIOS) {
-                optimizeTablesForMobile();
+            try {
+                // Update device info on resize
+                const updatedDeviceInfo = detectDevice();
+                
+                // Optimize for various device types
+                if (updatedDeviceInfo.isMobile || updatedDeviceInfo.isTablet || updatedDeviceInfo.isIOS) {
+                    optimizeTablesForMobile();
+                }
+            } catch (error) {
+                console.error('Error during resize event:', error);
+                // Fallback to simpler detection if device detection fails
+                if (window.innerWidth <= 767 || isIOSDevice()) {
+                    optimizeTablesForMobile();
+                }
             }
         });
         
-        // Function to update all views for mobile
+        // Enhanced function to update all views for multiple device types
         function updateAllViewsForMobile() {
-            // Apply optimization for tables
-            optimizeTablesForMobile();
-            
-            // Apply additional mobile-specific adjustments
-            var isMobile = window.innerWidth <= 767;
-            var isIOS = isIOSDevice();
-            
-            if (isMobile || isIOS) {
-                // Ensure tables take full width
-                var tables = document.querySelectorAll('.subject-table, .chronological-table');
-                for (var i = 0; i < tables.length; i++) {
-                    tables[i].style.width = '100%';
-                    tables[i].style.display = 'block';
-                    tables[i].style.tableLayout = 'fixed';
-                }
+            try {
+                // Apply optimization for tables
+                optimizeTablesForMobile();
                 
-                // Make sure calendar view is optimized
-                var calendarContainer = document.getElementById('calendar-container');
-                if (calendarContainer && calendarContainer.style.display === 'block') {
-                    var calendarGrid = document.querySelector('.calendar-grid');
-                    if (calendarGrid) {
-                        calendarGrid.style.width = '100%';
+                // Use comprehensive device detection
+                const currentDeviceInfo = detectDevice();
+                
+                // Apply device-specific optimizations
+                if (currentDeviceInfo.isMobile || currentDeviceInfo.isTablet || currentDeviceInfo.isIOS) {
+                    // Ensure tables take full width
+                    const tables = document.querySelectorAll('.subject-table, .chronological-table');
+                    for (let i = 0; i < tables.length; i++) {
+                        tables[i].style.width = '100%';
+                        
+                        // Different display property for different browsers
+                        if (currentDeviceInfo.isIOS || currentDeviceInfo.isSafari) {
+                            tables[i].style.display = 'table';
+                        } else {
+                            tables[i].style.display = 'block';
+                        }
+                        
+                        tables[i].style.tableLayout = 'fixed';
+                        
+                        // Add additional optimizations for Android
+                        if (currentDeviceInfo.isAndroid) {
+                            tables[i].style.overflowX = 'auto';
+                            tables[i].style.webkitOverflowScrolling = 'touch';
+                        }
+                    }
+                    
+                    // Make sure calendar view is optimized
+                    const calendarContainer = document.getElementById('calendar-container');
+                    if (calendarContainer && 
+                        (calendarContainer.style.display === 'block' || 
+                         getComputedStyle(calendarContainer).display === 'block')) {
+                        const calendarGrid = calendarContainer.querySelector('.calendar-grid');
+                        if (calendarGrid) {
+                            calendarGrid.style.width = '100%';
+                            
+                            // Additional fixes for older browsers
+                            if (currentDeviceInfo.isIE || currentDeviceInfo.isEdge) {
+                                // Fallback for browsers without grid support
+                                if (!currentDeviceInfo.supportsGrid) {
+                                    const dayElements = calendarGrid.querySelectorAll('.calendar-day-header, .calendar-day');
+                                    
+                                    // Convert to flexbox layout for older browsers
+                                    calendarGrid.style.display = 'flex';
+                                    calendarGrid.style.flexWrap = 'wrap';
+                                    
+                                    dayElements.forEach(element => {
+                                        element.style.width = 'calc(100% / 7)';
+                                        element.style.boxSizing = 'border-box';
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Apply additional Android-specific fixes
+                    if (currentDeviceInfo.isAndroid) {
+                        fixAndroidSpecificIssues();
                     }
                 }
+            } catch (error) {
+                console.error('Error in updateAllViewsForMobile:', error);
+                // Fallback to basic mobile detection if something fails
+                const isMobile = window.innerWidth <= 767;
+                const isIOS = isIOSDevice();
+                
+                if (isMobile || isIOS) {
+                    // Basic table fixes that work everywhere
+                    const tables = document.querySelectorAll('.subject-table, .chronological-table');
+                    for (let i = 0; i < tables.length; i++) {
+                        tables[i].style.width = '100%';
+                        tables[i].style.display = 'block';
+                        tables[i].style.tableLayout = 'fixed';
+                    }
+                }
+            }
+        }
+        
+        // Fix Android-specific issues
+        function fixAndroidSpecificIssues() {
+            try {
+                // Fix for Android WebView table rendering issues
+                const tables = document.querySelectorAll('table');
+                tables.forEach(table => {
+                    // Force visible overflow on Android
+                    table.style.overflowX = 'visible';
+                    
+                    // Fix for Android Chrome text size adjustment
+                    table.style.webkitTextSizeAdjust = 'none';
+                    table.style.textSizeAdjust = 'none';
+                    
+                    // Enable hardware acceleration on Android
+                    table.style.transform = 'translateZ(0)';
+                    table.style.webkitTransform = 'translateZ(0)';
+                });
+                
+                // Fix for Android input field focus issues
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        // Slight delay to ensure keyboard is shown
+                        setTimeout(() => {
+                            // Scroll to input
+                            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    });
+                });
+            } catch (error) {
+                console.error('Error in Android specific fixes:', error);
+                // No fallback needed as these are supplementary fixes
             }
         }
         
@@ -1260,34 +1456,220 @@
             });
         }
         
-        // Function to calculate days left until an exam
+        // Improved feature detection and polyfills
+        (function() {
+            // Apply polyfills for better cross-browser compatibility
+            try {
+                // Add polyfill for Element.closest
+                if (!Element.prototype.closest) {
+                    Element.prototype.closest = function(s) {
+                        var el = this;
+                        do {
+                            if (el.matches(s)) return el;
+                            el = el.parentElement || el.parentNode;
+                        } while (el !== null && el.nodeType === 1);
+                        return null;
+                    };
+                }
+                
+                // Add polyfill for Element.matches
+                if (!Element.prototype.matches) {
+                    Element.prototype.matches =
+                        Element.prototype.matchesSelector ||
+                        Element.prototype.mozMatchesSelector ||
+                        Element.prototype.msMatchesSelector ||
+                        Element.prototype.oMatchesSelector ||
+                        Element.prototype.webkitMatchesSelector ||
+                        function(s) {
+                            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                                i = matches.length;
+                            while (--i >= 0 && matches.item(i) !== this) {}
+                            return i > -1;
+                        };
+                }
+                
+                // Add polyfill for NodeList.forEach
+                if (window.NodeList && !NodeList.prototype.forEach) {
+                    NodeList.prototype.forEach = Array.prototype.forEach;
+                }
+                
+                // Add polyfill for Object.entries for IE
+                if (!Object.entries) {
+                    Object.entries = function(obj) {
+                        var ownProps = Object.keys(obj),
+                            i = ownProps.length,
+                            resArray = new Array(i);
+                        while (i--)
+                            resArray[i] = [ownProps[i], obj[ownProps[i]]];
+                        return resArray;
+                    };
+                }
+                
+                // Add polyfill for String.includes
+                if (!String.prototype.includes) {
+                    String.prototype.includes = function(search, start) {
+                        if (typeof start !== 'number') {
+                            start = 0;
+                        }
+                        if (start + search.length > this.length) {
+                            return false;
+                        } else {
+                            return this.indexOf(search, start) !== -1;
+                        }
+                    };
+                }
+                
+                // CSS.supports polyfill
+                if (!window.CSS || !window.CSS.supports) {
+                    window.CSS = window.CSS || {};
+                    window.CSS.supports = function(prop, value) {
+                        var div = document.createElement('div');
+                        try {
+                            div.style[prop] = value;
+                            return div.style[prop] === value;
+                        } catch (e) {
+                            return false;
+                        }
+                    };
+                }
+                
+                // requestAnimationFrame polyfill
+                if (!window.requestAnimationFrame) {
+                    window.requestAnimationFrame = function(callback) {
+                        return setTimeout(function() {
+                            callback(Date.now());
+                        }, 1000 / 60); // 60fps
+                    };
+                }
+                
+                if (!window.cancelAnimationFrame) {
+                    window.cancelAnimationFrame = function(id) {
+                        clearTimeout(id);
+                    };
+                }
+                
+                console.log('Polyfills applied successfully');
+            } catch (e) {
+                console.error('Error applying polyfills:', e);
+            }
+        })();
+        
+        // Enhanced function to calculate days left until an exam with better error handling
         function calculateDaysLeft(dateStr) {
             try {
-                if (!dateStr || dateStr.toLowerCase().includes('tbd')) {
+                // Check for invalid date formats
+                if (!dateStr || typeof dateStr !== 'string') {
+                    console.warn('Invalid date format:', dateStr);
                     return 999;
                 }
                 
-                const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
-                const match = dateStr.match(regex);
+                // Check for TBD or placeholder dates
+                if (dateStr.toLowerCase().includes('tbd') || 
+                    dateStr.toLowerCase().includes('to be determined') || 
+                    dateStr.toLowerCase().includes('tba')) {
+                    return 999;
+                }
                 
+                // Try to match common date formats
+                // Format: "Month Day(st/nd/rd/th)"
+                const standardRegex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)?/i;
+                let match = dateStr.match(standardRegex);
+                
+                // If standard format fails, try alternative formats
                 if (!match) {
-                    console.error('Could not parse exam date:', dateStr);
+                    // Try MM/DD/YYYY format
+                    const numericRegex = /(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/;
+                    match = dateStr.match(numericRegex);
+                    
+                    if (match) {
+                        // Handle MM/DD/YYYY format
+                        const month = parseInt(match[1], 10) - 1; // 0-based month
+                        const day = parseInt(match[2], 10);
+                        const year = match[3] ? parseInt(match[3], 10) : new Date().getFullYear();
+                        
+                        // Fix 2-digit years
+                        const fullYear = year < 100 ? (year < 50 ? 2000 + year : 1900 + year) : year;
+                        
+                        const examDate = new Date(fullYear, month, day);
+                        
+                        if (isNaN(examDate.getTime())) {
+                            console.warn('Invalid numeric date:', dateStr);
+                            return 999;
+                        }
+                        
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Normalize to start of day
+                        
+                        const diffTime = examDate.getTime() - today.getTime();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        return diffDays;
+                    }
+                    
+                    // If all else fails, return invalid
+                    console.warn('Could not parse date format:', dateStr);
                     return 999;
                 }
                 
+                // Process standard "Month Day" format
                 const monthName = match[1];
                 const day = parseInt(match[2], 10);
                 const year = new Date().getFullYear();
-                const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
-                const examDate = new Date(year, monthIndex, day);
                 
-                if (isNaN(examDate.getTime())) {
-                    console.error('Invalid date object for:', dateStr);
+                // Handle month name variations
+                let monthIndex;
+                try {
+                    // Try standard conversion first
+                    monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
+                    
+                    // Check if conversion failed
+                    if (isNaN(monthIndex)) {
+                        // Manual mapping for non-standard month names or different languages
+                        const monthMap = {
+                            'jan': 0, 'january': 0,
+                            'feb': 1, 'february': 1,
+                            'mar': 2, 'march': 2,
+                            'apr': 3, 'april': 3,
+                            'may': 4,
+                            'jun': 5, 'june': 5,
+                            'jul': 6, 'july': 6,
+                            'aug': 7, 'august': 7,
+                            'sep': 8, 'sept': 8, 'september': 8,
+                            'oct': 9, 'october': 9,
+                            'nov': 10, 'november': 10,
+                            'dec': 11, 'december': 11
+                        };
+                        
+                        monthIndex = monthMap[monthName.toLowerCase()];
+                        
+                        if (monthIndex === undefined) {
+                            console.warn('Unknown month name:', monthName);
+                            return 999;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing month:', e);
                     return 999;
                 }
                 
+                const examDate = new Date(year, monthIndex, day);
+                
+                if (isNaN(examDate.getTime())) {
+                    console.warn('Invalid date object for:', dateStr);
+                    return 999;
+                }
+                
+                // Handle dates that already passed this year
                 const today = new Date();
-                const diffTime = examDate.getTime() - today.getTime();
+                today.setHours(0, 0, 0, 0); // Normalize to start of day
+                
+                let diffTime = examDate.getTime() - today.getTime();
+                
+                // If date has passed, assume next year
+                if (diffTime < 0 && Math.abs(diffTime) > 1000 * 60 * 60 * 24) {
+                    examDate.setFullYear(year + 1);
+                    diffTime = examDate.getTime() - today.getTime();
+                }
+                
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 return diffDays;
             } catch (error) {
@@ -1420,16 +1802,22 @@
             if (refreshBtn) {
                 refreshBtn.addEventListener('click', function() {
                     const refreshIcon = this.querySelector('.refresh-icon');
-                    refreshIcon.classList.add('refreshing');
-                    
-                    // Update all days left counters
-                    updateAllDaysLeft();
-                    
-                    // Show animation and success message
-                    setTimeout(() => {
-                        refreshIcon.classList.remove('refreshing');
+                    if (refreshIcon) {
+                        refreshIcon.classList.add('refreshing');
+                        
+                        // Update all days left counters
+                        updateAllDaysLeft();
+                        
+                        // Show animation and success message
+                        setTimeout(() => {
+                            refreshIcon.classList.remove('refreshing');
+                            showSaveMessage("Days remaining updated successfully");
+                        }, 800);
+                    } else {
+                        // If no icon found, still update days
+                        updateAllDaysLeft();
                         showSaveMessage("Days remaining updated successfully");
-                    }, 800);
+                    }
                 });
             }
             
@@ -1599,7 +1987,7 @@
                     }
                 }, 500);
             }
-            
+
             // Check if we're on iOS and apply fixes
             const isIOS = isIOSDevice();
             if (isIOS) {
@@ -1619,8 +2007,11 @@
                 window.addEventListener('orientationchange', fixIOSHeight);
                 
                 // Force proper rendering on iOS by adding specific styles
-                document.getElementById('exam-view').style.width = '100%';
-                document.getElementById('exam-view').style.display = 'block';
+                const examView = document.getElementById('exam-view');
+                if (examView) {
+                    examView.style.width = '100%';
+                    examView.style.display = 'block';
+                }
                 
                 // Enable momentum scrolling on containers
                 const scrollContainers = document.querySelectorAll('.exam-table-container, .calendar-container');
@@ -1681,98 +2072,202 @@
                 if (activeButton) {
                     console.log('Setting initial active tab:', activeButton.getAttribute('data-view'));
                     switchToTab(activeButton.getAttribute('data-view'));
-                } else {
+            } else {
                     console.log('No active button found, defaulting to subjects');
                     // Force active class on subjects button first
-                    document.getElementById('subjects-btn').classList.add('active');
+                    const subjectsBtn = document.getElementById('subjects-btn');
+                    if (subjectsBtn) {
+                        subjectsBtn.classList.add('active');
+                    }
                     switchToTab('subjects');
                 }
             }, 800); // Longer timeout to ensure everything is loaded
         }
 
-        // Complete rewrite of tab switching functionality - old-school JS approach
+        // Complete rewrite of tab switching functionality with cross-browser compatibility
         function switchToTab(tabName) {
-            console.log('Switching to tab:', tabName);
-            
-            // Get all view buttons and containers
-            var buttons = document.querySelectorAll('.view-btn');
-            var subjectsContainer = document.getElementById('subjects-container');
-            var chronologicalContainer = document.getElementById('chronological-container');
-            var calendarContainer = document.getElementById('calendar-container');
-            
-            // Ensure all containers exist to prevent errors
-            if (!subjectsContainer || !chronologicalContainer || !calendarContainer) {
-                console.error('Tab containers not found, creating them');
+            try {
+                console.log('Switching to tab:', tabName);
                 
-                // Ensure exam-view exists
-                var examView = document.getElementById('exam-view');
-                if (!examView) {
-                    examView = document.createElement('div');
-                    examView.id = 'exam-view';
-                    document.querySelector('.container').appendChild(examView);
+                // Get all view buttons and containers
+                const buttons = document.querySelectorAll('.view-btn');
+                const subjectsContainer = document.getElementById('subjects-container');
+                const chronologicalContainer = document.getElementById('chronological-container');
+                const calendarContainer = document.getElementById('calendar-container');
+                
+                // Ensure all containers exist to prevent errors
+                if (!subjectsContainer || !chronologicalContainer || !calendarContainer) {
+                    console.warn('Tab containers not found, creating them');
+                    
+                    // Ensure exam-view exists
+                    let examView = document.getElementById('exam-view');
+                    if (!examView) {
+                        examView = document.createElement('div');
+                        examView.id = 'exam-view';
+                        const container = document.querySelector('.container');
+                        if (container) {
+                            container.appendChild(examView);
+                        } else {
+                            // Ultimate fallback - create container if it doesn't exist
+                            const newContainer = document.createElement('div');
+                            newContainer.className = 'container';
+                            document.body.appendChild(newContainer);
+                            newContainer.appendChild(examView);
+                        }
+                    }
+                    
+                    // Create any missing containers
+                    if (!subjectsContainer) {
+                        const newSubjectsContainer = document.createElement('div');
+                        newSubjectsContainer.id = 'subjects-container';
+                        newSubjectsContainer.className = 'exam-table-container';
+                        examView.appendChild(newSubjectsContainer);
+                    }
+                    
+                    if (!chronologicalContainer) {
+                        const newChronologicalContainer = document.createElement('div');
+                        newChronologicalContainer.id = 'chronological-container';
+                        newChronologicalContainer.className = 'exam-table-container';
+                        newChronologicalContainer.style.display = 'none';
+                        examView.appendChild(newChronologicalContainer);
+                    }
+                    
+                    if (!calendarContainer) {
+                        const newCalendarContainer = document.createElement('div');
+                        newCalendarContainer.id = 'calendar-container';
+                        newCalendarContainer.className = 'calendar-container';
+                        newCalendarContainer.style.display = 'none';
+                        examView.appendChild(newCalendarContainer);
+                    }
                 }
                 
-                // Create any missing containers
-                if (!subjectsContainer) {
-                    subjectsContainer = document.createElement('div');
-                    subjectsContainer.id = 'subjects-container';
-                    subjectsContainer.className = 'exam-table-container';
-                    examView.appendChild(subjectsContainer);
+                // Get the updated references to containers
+                const updatedSubjectsContainer = document.getElementById('subjects-container');
+                const updatedChronologicalContainer = document.getElementById('chronological-container');
+                const updatedCalendarContainer = document.getElementById('calendar-container');
+                
+                // Use a better way to hide containers that works across browsers
+                const hideContainer = (container) => {
+                    if (container) {
+                        container.style.display = 'none';
+                        
+                        // Additional fix for older browsers
+                        container.style.visibility = 'hidden';
+                        container.style.opacity = '0';
+                        container.setAttribute('aria-hidden', 'true');
+                    }
+                };
+                
+                // Use a better way to show containers that works across browsers
+                const showContainer = (container) => {
+                    if (container) {
+                        container.style.display = 'block';
+                        
+                        // Additional fix for older browsers
+                        container.style.visibility = 'visible';
+                        container.style.opacity = '1';
+                        container.setAttribute('aria-hidden', 'false');
+                        
+                        // Ensure container width is 100% on mobile
+                        if (window.innerWidth <= 767 || deviceInfo.isMobile || deviceInfo.isTablet) {
+                            container.style.width = '100%';
+                            container.style.maxWidth = '100%';
+                        }
+                    }
+                };
+                
+                // Hide all containers first - safer approach
+                hideContainer(updatedSubjectsContainer);
+                hideContainer(updatedChronologicalContainer);
+                hideContainer(updatedCalendarContainer);
+                
+                // Remove active class from all buttons with cross-browser compatibility
+                buttons.forEach(function(button) {
+                    button.classList.remove('active');
+                    button.setAttribute('aria-selected', 'false');
+                });
+                
+                // Get the button for this tab and make it active
+                const activeButton = document.querySelector(`.view-btn[data-view="${tabName}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('active');
+                    activeButton.setAttribute('aria-selected', 'true');
                 }
                 
-                if (!chronologicalContainer) {
-                    chronologicalContainer = document.createElement('div');
-                    chronologicalContainer.id = 'chronological-container';
-                    chronologicalContainer.className = 'exam-table-container';
-                    examView.appendChild(chronologicalContainer);
+                // Create a safety flag to prevent double renders
+                let contentRendered = false;
+                
+                // Show the selected container and render content with error handling
+                if (tabName === 'subjects') {
+                    try {
+                        if (!contentRendered && updatedSubjectsContainer) {
+                            renderSubjects(); // Render content
+                            showContainer(updatedSubjectsContainer); // Show container
+                            contentRendered = true;
+                        }
+                    } catch (error) {
+                        console.error('Error in subjects tab:', error);
+                        showError('There was a problem loading the subjects view. Please try again.');
+                    }
+                } else if (tabName === 'chronological') {
+                    try {
+                        if (!contentRendered && updatedChronologicalContainer) {
+                            renderExamsInOrder(); // Render content
+                            showContainer(updatedChronologicalContainer); // Show container
+                            contentRendered = true;
+                        }
+                    } catch (error) {
+                        console.error('Error in chronological tab:', error);
+                        showError('There was a problem loading the chronological view. Please try again.');
+                    }
+                } else if (tabName === 'calendar') {
+                    try {
+                        if (!contentRendered && updatedCalendarContainer) {
+                            renderCalendarView(); // Render content
+                            showContainer(updatedCalendarContainer); // Show container
+                            contentRendered = true;
+                        }
+                    } catch (error) {
+                        console.error('Error in calendar tab:', error);
+                        showError('There was a problem loading the calendar view. Please try again.');
+                    }
                 }
                 
-                if (!calendarContainer) {
-                    calendarContainer = document.createElement('div');
-                    calendarContainer.id = 'calendar-container';
-                    calendarContainer.className = 'calendar-container';
-                    examView.appendChild(calendarContainer);
-                }
+                // Apply mobile optimizations with a slight delay to ensure rendering
+                // is complete before applying optimizations
+                setTimeout(function() {
+                    updateAllViewsForMobile();
+                    
+                    // Additional force redraw for problematic browsers
+                    if (deviceInfo.isIOS || deviceInfo.isSafari) {
+                        document.body.style.zoom = 0.99;
+                        setTimeout(function() {
+                            document.body.style.zoom = 1;
+                        }, 10);
+                    }
+                }, 50);
+            } catch (error) {
+                console.error('Error in switchToTab:', error);
+                // Fallback to a simpler tab switch implementation if the enhanced one fails
+                const simpleSwitch = (id) => {
+                    document.querySelectorAll('.exam-table-container, .calendar-container').forEach(c => c.style.display = 'none');
+                    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    
+                    const container = document.getElementById(id);
+                    if (container) {
+                        container.style.display = 'block';
+                    }
+                    
+                    const btn = document.querySelector(`.view-btn[data-view="${tabName}"]`);
+                    if (btn) {
+                        btn.classList.add('active');
+                    }
+                };
+                
+                simpleSwitch(tabName + '-container');
             }
-            
-            // Hide all containers first - simpler approach
-            if (subjectsContainer) subjectsContainer.style.display = 'none';
-            if (chronologicalContainer) chronologicalContainer.style.display = 'none';
-            if (calendarContainer) calendarContainer.style.display = 'none';
-            
-            // Remove active class from all buttons
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            
-            // Get the button for this tab and make it active
-            var activeButton = document.querySelector('.view-btn[data-view="' + tabName + '"]');
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-            
-            // Show the selected container and render content
-            if (tabName === 'subjects') {
-                if (subjectsContainer) {
-                    renderSubjects(); // Render content
-                    subjectsContainer.style.display = 'block'; // Show container
-                }
-            } else if (tabName === 'chronological') {
-                if (chronologicalContainer) {
-                    renderExamsInOrder(); // Render content
-                    chronologicalContainer.style.display = 'block'; // Show container
-                }
-            } else if (tabName === 'calendar') {
-                if (calendarContainer) {
-                    renderCalendarView(); // Render content
-                    calendarContainer.style.display = 'block'; // Show container
-                }
-            }
-            
-            // Apply mobile optimizations
-            updateAllViewsForMobile();
         }
-        
+
         // Set up the click handlers when the DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             var buttons = document.querySelectorAll('.view-btn');
@@ -1809,7 +2304,10 @@
                     var activeTabName = activeButton.getAttribute('data-view');
                     switchToTab(activeTabName);
                 } else {
-                    document.getElementById('subjects-btn').classList.add('active');
+                    const subjectsBtn = document.getElementById('subjects-btn');
+                    if (subjectsBtn) {
+                        subjectsBtn.classList.add('active');
+                    }
                     switchToTab('subjects');
                 }
             }, 500); // Delay to ensure DOM is ready
@@ -1819,75 +2317,75 @@
         function switchTab(tabName) {
             switchToTab(tabName);
         }
-
-        // Implement calendar view rendering
-        function renderCalendarView() {
-            try {
+            
+            // Implement calendar view rendering
+            function renderCalendarView() {
+                try {
                 console.log('Rendering calendar view');
                 
-                // Get the calendar container
-                const calendarContainer = document.getElementById('calendar-container');
-                if (!calendarContainer) {
-                    console.error('Calendar container not found');
-                    return;
-                }
-                
-                // Clear previous content
-                calendarContainer.innerHTML = '';
+                    // Get the calendar container
+                    const calendarContainer = document.getElementById('calendar-container');
+                    if (!calendarContainer) {
+                        console.error('Calendar container not found');
+                        return;
+                    }
+                    
+                    // Clear previous content
+                    calendarContainer.innerHTML = '';
                 
                 // Make sure the container is visible
                 calendarContainer.style.display = 'block';
                 
                 // Detect iOS for special handling
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                
-                // Get current month and year
-                const today = new Date();
-                let currentMonth = today.getMonth();
-                let currentYear = today.getFullYear();
-                
-                // Create calendar header with navigation
-                const calendarHeader = document.createElement('div');
-                calendarHeader.className = 'calendar-header';
+                    
+                    // Get current month and year
+                    const today = new Date();
+                    let currentMonth = today.getMonth();
+                    let currentYear = today.getFullYear();
+                    
+                    // Create calendar header with navigation
+                    const calendarHeader = document.createElement('div');
+                    calendarHeader.className = 'calendar-header';
                 calendarHeader.style.display = 'flex';
                 calendarHeader.style.justifyContent = 'space-between';
                 calendarHeader.style.alignItems = 'center';
                 calendarHeader.style.marginBottom = '20px';
                 calendarHeader.style.width = '100%';
-                
-                const prevMonthBtn = document.createElement('button');
-                prevMonthBtn.className = 'calendar-nav-btn';
-                prevMonthBtn.innerHTML = '&laquo; Prev';
+                    
+                    const prevMonthBtn = document.createElement('button');
+                    prevMonthBtn.className = 'calendar-nav-btn';
+                    prevMonthBtn.innerHTML = '&laquo; Prev';
                 prevMonthBtn.style.padding = '8px 15px';
                 prevMonthBtn.style.backgroundColor = '#3498db';
                 prevMonthBtn.style.color = 'white';
                 prevMonthBtn.style.border = 'none';
                 prevMonthBtn.style.borderRadius = '5px';
                 prevMonthBtn.style.cursor = 'pointer';
-                
-                const monthYearDisplay = document.createElement('h2');
-                monthYearDisplay.className = 'month-year-display';
+                    
+                    const monthYearDisplay = document.createElement('h2');
+                    monthYearDisplay.className = 'month-year-display';
                 monthYearDisplay.style.margin = '0';
                 monthYearDisplay.style.fontSize = isIOS ? '1.2rem' : '1.5rem';
-                
-                const nextMonthBtn = document.createElement('button');
-                nextMonthBtn.className = 'calendar-nav-btn';
-                nextMonthBtn.innerHTML = 'Next &raquo;';
+                    
+                    const nextMonthBtn = document.createElement('button');
+                    nextMonthBtn.className = 'calendar-nav-btn';
+                    nextMonthBtn.innerHTML = 'Next &raquo;';
                 nextMonthBtn.style.padding = '8px 15px';
                 nextMonthBtn.style.backgroundColor = '#3498db';
                 nextMonthBtn.style.color = 'white';
                 nextMonthBtn.style.border = 'none';
                 nextMonthBtn.style.borderRadius = '5px';
                 nextMonthBtn.style.cursor = 'pointer';
-                
-                calendarHeader.appendChild(prevMonthBtn);
-                calendarHeader.appendChild(monthYearDisplay);
-                calendarHeader.appendChild(nextMonthBtn);
-                calendarContainer.appendChild(calendarHeader);
-                
-                // Create calendar grid container
-                const calendarGrid = document.createElement('div');
-                calendarGrid.className = 'calendar-grid';
+                    
+                    calendarHeader.appendChild(prevMonthBtn);
+                    calendarHeader.appendChild(monthYearDisplay);
+                    calendarHeader.appendChild(nextMonthBtn);
+                    calendarContainer.appendChild(calendarHeader);
+                    
+                    // Create calendar grid container
+                    const calendarGrid = document.createElement('div');
+                    calendarGrid.className = 'calendar-grid';
                 calendarGrid.style.display = 'grid';
                 calendarGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
                 calendarGrid.style.gap = '5px';
@@ -1901,29 +2399,28 @@
                     calendarContainer.style.margin = '0';
                     calendarContainer.style.boxSizing = 'border-box';
                     calendarContainer.style.overflow = 'hidden';
-                    
                     calendarGrid.style.width = '100%';
                     calendarGrid.style.minWidth = '100%';
                 }
                 
-                calendarContainer.appendChild(calendarGrid);
-                
-                // Function to generate the calendar for a specific month and year
-                function generateCalendar(month, year) {
-                    // Update header display
-                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                                       'July', 'August', 'September', 'October', 'November', 'December'];
-                    monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+                    calendarContainer.appendChild(calendarGrid);
                     
-                    // Clear previous calendar
-                    calendarGrid.innerHTML = '';
-                    
-                    // Add day headers
-                    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                    dayNames.forEach(day => {
-                        const dayHeader = document.createElement('div');
-                        dayHeader.className = 'calendar-day-header';
-                        dayHeader.textContent = day;
+                    // Function to generate the calendar for a specific month and year
+                    function generateCalendar(month, year) {
+                        // Update header display
+                        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                           'July', 'August', 'September', 'October', 'November', 'December'];
+                        monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
+                        
+                        // Clear previous calendar
+                        calendarGrid.innerHTML = '';
+                        
+                        // Add day headers
+                        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                        dayNames.forEach(day => {
+                            const dayHeader = document.createElement('div');
+                            dayHeader.className = 'calendar-day-header';
+                            dayHeader.textContent = day;
                         dayHeader.style.textAlign = 'center';
                         dayHeader.style.fontWeight = 'bold';
                         dayHeader.style.padding = isIOS ? '5px 2px' : '10px';
@@ -1936,17 +2433,17 @@
                             dayHeader.style.overflow = 'hidden';
                         }
                         
-                        calendarGrid.appendChild(dayHeader);
-                    });
-                    
-                    // Get first day of the month and number of days
-                    const firstDay = new Date(year, month, 1).getDay();
-                    const daysInMonth = new Date(year, month + 1, 0).getDate();
-                    
-                    // Add blank cells for days before the 1st of the month
-                    for (let i = 0; i < firstDay; i++) {
-                        const emptyDay = document.createElement('div');
-                        emptyDay.className = 'calendar-day empty';
+                            calendarGrid.appendChild(dayHeader);
+                        });
+                        
+                        // Get first day of the month and number of days
+                        const firstDay = new Date(year, month, 1).getDay();
+                        const daysInMonth = new Date(year, month + 1, 0).getDate();
+                        
+                        // Add blank cells for days before the 1st of the month
+                        for (let i = 0; i < firstDay; i++) {
+                            const emptyDay = document.createElement('div');
+                            emptyDay.className = 'calendar-day empty';
                         emptyDay.style.backgroundColor = '#f9f9f9';
                         
                         if (isIOS) {
@@ -1956,45 +2453,45 @@
                             emptyDay.style.minHeight = '100px';
                         }
                         
-                        calendarGrid.appendChild(emptyDay);
-                    }
-                    
-                    // Collect all exam dates for this month
-                    const monthExams = [];
-                    
-                    Object.entries(exams).forEach(([subject, examList]) => {
-                        examList.forEach(exam => {
-                            try {
-                                if (exam.date) {
-                                    const dateStr = exam.date;
-                                    const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
-                                    const match = dateStr.match(regex);
-                                    
-                                    if (match) {
-                                        const monthName = match[1];
-                                        const day = parseInt(match[2], 10);
-                                        const examMonth = new Date(`${monthName} 1, 2000`).getMonth();
+                            calendarGrid.appendChild(emptyDay);
+                        }
+                        
+                        // Collect all exam dates for this month
+                        const monthExams = [];
+                        
+                        Object.entries(exams).forEach(([subject, examList]) => {
+                            examList.forEach(exam => {
+                                try {
+                                    if (exam.date) {
+                                        const dateStr = exam.date;
+                                        const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
+                                        const match = dateStr.match(regex);
                                         
-                                        if (examMonth === month) {
-                                            monthExams.push({
-                                                day: day,
-                                                subject: subject,
-                                                name: exam.name,
-                                                dateStr: exam.date
-                                            });
+                                        if (match) {
+                                            const monthName = match[1];
+                                            const day = parseInt(match[2], 10);
+                                            const examMonth = new Date(`${monthName} 1, 2000`).getMonth();
+                                            
+                                            if (examMonth === month) {
+                                                monthExams.push({
+                                                    day: day,
+                                                    subject: subject,
+                                                    name: exam.name,
+                                                    dateStr: exam.date
+                                                });
+                                            }
                                         }
                                     }
+                                } catch (error) {
+                                    console.error('Error processing exam date for calendar:', error);
                                 }
-                            } catch (error) {
-                                console.error('Error processing exam date for calendar:', error);
-                            }
+                            });
                         });
-                    });
-                    
-                    // Create calendar days
-                    for (let day = 1; day <= daysInMonth; day++) {
-                        const dayCell = document.createElement('div');
-                        dayCell.className = 'calendar-day';
+                        
+                        // Create calendar days
+                        for (let day = 1; day <= daysInMonth; day++) {
+                            const dayCell = document.createElement('div');
+                            dayCell.className = 'calendar-day';
                         dayCell.style.border = '1px solid #ddd';
                         dayCell.style.backgroundColor = '#fff';
                         dayCell.style.borderRadius = '5px';
@@ -2008,38 +2505,38 @@
                             dayCell.style.minHeight = '100px';
                             dayCell.style.padding = '5px';
                         }
-                        
-                        // Check if this is today
-                        const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                        if (isToday) {
-                            dayCell.classList.add('today');
+                            
+                            // Check if this is today
+                            const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+                            if (isToday) {
+                                dayCell.classList.add('today');
                             dayCell.style.border = '2px solid #3498db';
-                        }
-                        
-                        // Add day number
-                        const dayNumber = document.createElement('div');
-                        dayNumber.className = 'day-number';
-                        dayNumber.textContent = day;
+                            }
+                            
+                            // Add day number
+                            const dayNumber = document.createElement('div');
+                            dayNumber.className = 'day-number';
+                            dayNumber.textContent = day;
                         dayNumber.style.fontWeight = 'bold';
                         dayNumber.style.marginBottom = isIOS ? '2px' : '5px';
-                        dayCell.appendChild(dayNumber);
-                        
-                        // Add exams for this day
-                        const dayExams = monthExams.filter(exam => exam.day === day);
-                        
-                        if (dayExams.length > 0) {
-                            dayCell.classList.add('has-exams');
-                            dayCell.style.backgroundColor = '#f0f8ff';
+                            dayCell.appendChild(dayNumber);
                             
-                            const examsList = document.createElement('div');
-                            examsList.className = 'day-exams';
+                            // Add exams for this day
+                            const dayExams = monthExams.filter(exam => exam.day === day);
+                            
+                            if (dayExams.length > 0) {
+                                dayCell.classList.add('has-exams');
+                            dayCell.style.backgroundColor = '#f0f8ff';
+                                
+                                const examsList = document.createElement('div');
+                                examsList.className = 'day-exams';
                             examsList.style.display = 'flex';
                             examsList.style.flexDirection = 'column';
                             examsList.style.gap = '3px';
-                            
-                            dayExams.forEach(exam => {
-                                const examItem = document.createElement('div');
-                                examItem.className = 'calendar-exam';
+                                
+                                dayExams.forEach(exam => {
+                                    const examItem = document.createElement('div');
+                                    examItem.className = 'calendar-exam';
                                 examItem.style.fontSize = isIOS ? '0.6rem' : '0.8rem';
                                 examItem.style.padding = isIOS ? '1px 3px' : '2px 5px';
                                 examItem.style.borderRadius = '3px';
@@ -2047,37 +2544,37 @@
                                 examItem.style.whiteSpace = 'nowrap';
                                 examItem.style.overflow = 'hidden';
                                 examItem.style.textOverflow = 'ellipsis';
-                                
-                                // Calculate days left
-                                const daysLeft = calculateDaysLeft(exam.dateStr);
-                                
-                                // Add appropriate class based on urgency
-                                if (daysLeft < 0) {
-                                    examItem.classList.add('past-exam');
+                                    
+                                    // Calculate days left
+                                    const daysLeft = calculateDaysLeft(exam.dateStr);
+                                    
+                                    // Add appropriate class based on urgency
+                                    if (daysLeft < 0) {
+                                        examItem.classList.add('past-exam');
                                     examItem.style.backgroundColor = '#e0e0e0';
                                     examItem.style.textDecoration = 'line-through';
-                                } else if (daysLeft <= 7) {
-                                    examItem.classList.add('urgent-exam');
+                                    } else if (daysLeft <= 7) {
+                                        examItem.classList.add('urgent-exam');
                                     examItem.style.backgroundColor = '#ffcdd2';
-                                } else if (daysLeft <= 14) {
-                                    examItem.classList.add('soon-exam');
+                                    } else if (daysLeft <= 14) {
+                                        examItem.classList.add('soon-exam');
                                     examItem.style.backgroundColor = '#fff9c4';
-                                } else if (daysLeft <= 30) {
-                                    examItem.classList.add('upcoming-exam');
+                                    } else if (daysLeft <= 30) {
+                                        examItem.classList.add('upcoming-exam');
                                     examItem.style.backgroundColor = '#c8e6c9';
-                                }
+                                    }
+                                    
+                                    examItem.textContent = `${exam.subject}: ${exam.name}`;
+                                    examItem.title = `${exam.subject}: ${exam.name} (${exam.dateStr})`;
+                                    
+                                    examsList.appendChild(examItem);
+                                });
                                 
-                                examItem.textContent = `${exam.subject}: ${exam.name}`;
-                                examItem.title = `${exam.subject}: ${exam.name} (${exam.dateStr})`;
-                                
-                                examsList.appendChild(examItem);
-                            });
+                                dayCell.appendChild(examsList);
+                            }
                             
-                            dayCell.appendChild(examsList);
+                            calendarGrid.appendChild(dayCell);
                         }
-                        
-                        calendarGrid.appendChild(dayCell);
-                    }
                     
                     // Force calendar display after rendering
                     if (isIOS) {
@@ -2097,32 +2594,33 @@
                                 cell.style.width = '100%';
                             });
                         }, 0);
+                        }
                     }
-                }
-                
-                // Initial calendar generation
-                generateCalendar(currentMonth, currentYear);
-                
-                // Add event listeners for navigation
-                prevMonthBtn.addEventListener('click', function() {
-                    currentMonth--;
-                    if (currentMonth < 0) {
-                        currentMonth = 11;
-                        currentYear--;
-                    }
+                    
+                    // Initial calendar generation
                     generateCalendar(currentMonth, currentYear);
-                });
-                
-                nextMonthBtn.addEventListener('click', function() {
-                    currentMonth++;
-                    if (currentMonth > 11) {
-                        currentMonth = 0;
-                        currentYear++;
-                    }
-                    generateCalendar(currentMonth, currentYear);
-                });
+                    
+                    // Add event listeners for navigation
+                    prevMonthBtn.addEventListener('click', function() {
+                        currentMonth--;
+                        if (currentMonth < 0) {
+                            currentMonth = 11;
+                            currentYear--;
+                        }
+                        generateCalendar(currentMonth, currentYear);
+                    });
+                    
+                    nextMonthBtn.addEventListener('click', function() {
+                        currentMonth++;
+                        if (currentMonth > 11) {
+                            currentMonth = 0;
+                            currentYear++;
+                        }
+                        generateCalendar(currentMonth, currentYear);
+                    });
             } catch (error) {
                 console.error('Error rendering calendar view:', error);
+                // Create fallback UI in case of error
                 const calendarContainer = document.getElementById('calendar-container');
                 if (calendarContainer) {
                     calendarContainer.innerHTML = '<div class="error-message" style="color: red; padding: 15px; text-align: center;">Error rendering calendar view. Please try refreshing the page.</div>';
@@ -2201,6 +2699,17 @@
                 };
             }
         });
+
+        // Define a reusable error display function
+        function showError(message) {
+            const errorContainer = document.createElement('div');
+            errorContainer.className = 'error-message';
+            errorContainer.textContent = message;
+            errorContainer.style.color = 'red';
+            errorContainer.style.padding = '15px';
+            errorContainer.style.textAlign = 'center';
+            document.body.appendChild(errorContainer);
+        }
     </script>
 </body>
 </html>
