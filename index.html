@@ -102,6 +102,47 @@
                 table-layout: fixed;
                 border-collapse: collapse;
             }
+            
+            /* Mobile calendar adjustments */
+            .calendar-container {
+                padding: 0;
+                width: 100%;
+                overflow-x: hidden;
+            }
+            
+            .calendar-grid {
+                gap: 2px;
+            }
+            
+            .calendar-day-header {
+                padding: 5px;
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 2px;
+                font-size: 0.9rem;
+            }
+            
+            .day-number {
+                margin-bottom: 2px;
+            }
+            
+            .calendar-exam {
+                font-size: 0.7rem;
+                padding: 1px 3px;
+                margin-bottom: 1px;
+            }
+            
+            .month-year-display {
+                font-size: 1.2rem;
+            }
+            
+            .calendar-nav-btn {
+                padding: 5px 10px;
+                font-size: 0.9rem;
+            }
         }
         
         /* View options styling */
@@ -212,6 +253,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
+            width: 100%;
         }
         
         .calendar-day-header {
