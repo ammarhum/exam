@@ -18,17 +18,253 @@
     <link rel="stylesheet" href="./styles.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
+            --primary-color: #2c3e50;  /* Dark blue */
+            --accent-color: #3498db;   /* Light blue */
             --bg-color: #f8f9fa;
             --text-color: #333;
             --card-bg: white;
-            --border-color: #ddd;
+            --border-color: #e0e0e0;
             --shadow-color: rgba(0, 0, 0, 0.1);
-            --urgent-color: #dc3545;
-            --soon-color: #ffc107;
-            --upcoming-color: #28a745;
-            --distant-color: #6c757d;
+            --urgent-color: #dc3545;   /* Red */
+            --soon-color: #ffc107;     /* Yellow */
+            --upcoming-color: #28a745; /* Green */
+            --distant-color: #6c757d;  /* Gray */
+        }
+        
+        /* Calendar styling to look more like iPhone calendar */
+        .calendar-container {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 0;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .month-year-display {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .calendar-nav-btn {
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .calendar-nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            width: 100%;
+            background-color: var(--border-color);
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 500;
+            padding: 10px 5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 13px;
+        }
+        
+        .calendar-day {
+            min-height: 80px;
+            background-color: white;
+            padding: 8px;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .calendar-day.empty {
+            background-color: #f8f9fa;
+        }
+        
+        .calendar-day.today {
+            background-color: rgba(52, 152, 219, 0.08);
+        }
+        
+        .day-number {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #444;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .today .day-number:after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -4px;
+            width: 25px;
+            height: 25px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+        
+        .today .day-number {
+            color: white;
+            margin-left: 4px;
+            z-index: 2;
+        }
+        
+        .day-exams {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 4px;
+        }
+        
+        .calendar-exam {
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 2px;
+            color: white;
+        }
+        
+        .calendar-exam:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-exam.past-exam {
+            background-color: var(--distant-color);
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+        
+        .calendar-exam.urgent-exam {
+            background-color: var(--urgent-color);
+        }
+        
+        .calendar-exam.soon-exam {
+            background-color: var(--soon-color);
+            color: #333; /* Dark text for better contrast on yellow */
+        }
+        
+        .calendar-exam.upcoming-exam {
+            background-color: var(--upcoming-color);
+        }
+        
+        /* Mobile calendar adjustments */
+        @media screen and (max-width: 767px) {
+            .calendar-container {
+                padding: 0;
+                width: 100%;
+                overflow-x: hidden;
+                border-radius: 10px;
+            }
+            
+            .calendar-grid {
+                gap: 1px;
+            }
+            
+            .calendar-day-header {
+                padding: 8px 3px;
+                font-size: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+            
+            .day-number {
+                margin-bottom: 2px;
+                font-size: 12px;
+            }
+            
+            .calendar-exam {
+                font-size: 9px;
+                padding: 2px 4px;
+                margin-bottom: 1px;
+                border-radius: 3px;
+            }
+            
+            .month-year-display {
+                font-size: 1.1rem;
+            }
+            
+            .calendar-header {
+                padding: 12px 10px;
+            }
+            
+            .calendar-nav-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            
+            .today .day-number:after {
+                width: 22px;
+                height: 22px;
+            }
+        }
+        
+        /* Update table styling to match the new color scheme */
+        .subject-table caption {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .days-urgent {
+            background-color: var(--urgent-color);
+            color: white;
+        }
+        
+        .days-soon {
+            background-color: var(--soon-color);
+            color: #333; /* Dark text for better contrast on yellow */
+        }
+        
+        .days-upcoming {
+            background-color: var(--upcoming-color);
+            color: white;
+        }
+        
+        .days-distant {
+            background-color: var(--distant-color);
+            color: white;
         }
         
         .splash-screen {
@@ -67,7 +303,7 @@
             font-size: 16px;
             color: #777;
         }
-
+        
         /* Basic mobile responsiveness */
         @media screen and (max-width: 767px) {
             .container {
@@ -102,47 +338,6 @@
                 table-layout: fixed;
                 border-collapse: collapse;
             }
-            
-            /* Mobile calendar adjustments */
-            .calendar-container {
-                padding: 0;
-                width: 100%;
-                overflow-x: hidden;
-            }
-            
-            .calendar-grid {
-                gap: 2px;
-            }
-            
-            .calendar-day-header {
-                padding: 5px;
-                font-size: 0.8rem;
-            }
-            
-            .calendar-day {
-                min-height: 60px;
-                padding: 2px;
-                font-size: 0.9rem;
-            }
-            
-            .day-number {
-                margin-bottom: 2px;
-            }
-            
-            .calendar-exam {
-                font-size: 0.7rem;
-                padding: 1px 3px;
-                margin-bottom: 1px;
-            }
-            
-            .month-year-display {
-                font-size: 1.2rem;
-            }
-            
-            .calendar-nav-btn {
-                padding: 5px 10px;
-                font-size: 0.9rem;
-            }
         }
         
         /* View options styling */
@@ -172,61 +367,62 @@
         /* Table styling */
         .subject-table {
             width: 100%;
-            border-collapse: collapse;
+                border-collapse: collapse;
             margin-bottom: 20px;
             background-color: white;
-        }
-        
-        .subject-table caption {
-            font-weight: bold;
-            padding: 12px 8px;
+            }
+            
+            .subject-table caption {
+                font-weight: bold;
+                padding: 12px 8px;
             background-color: var(--primary-color);
-            color: white;
-            font-size: 16px;
-            text-align: center;
-        }
-        
-        .subject-table th {
-            padding: 10px 8px;
-            font-size: 14px;
-            text-align: left;
-            background-color: #f5f5f5;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .subject-table td {
-            padding: 10px 8px;
-            vertical-align: middle;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .days-left-value {
-            display: inline-block;
-            text-align: center;
-            border-radius: 4px;
+                color: white;
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .subject-table th {
+                padding: 10px 8px;
+                font-size: 14px;
+                text-align: left;
+                background-color: #f5f5f5;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .subject-table td {
+                padding: 10px 8px;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .days-left-value {
+                display: inline-block;
+                text-align: center;
+                border-radius: 4px;
             padding: 4px 8px;
-            font-weight: bold;
-        }
-        
-        .days-urgent {
+                font-weight: bold;
+            }
+            
+            .days-urgent {
             background-color: var(--urgent-color);
-            color: white;
-        }
-        
-        .days-soon {
+                color: white;
+            }
+            
+            .days-soon {
             background-color: var(--soon-color);
-        }
-        
-        .days-upcoming {
+            color: #333; /* Dark text for better contrast on yellow */
+            }
+            
+            .days-upcoming {
             background-color: var(--upcoming-color);
-            color: white;
-        }
-        
-        .days-distant {
+                color: white;
+            }
+            
+            .days-distant {
             background-color: var(--distant-color);
-            color: white;
-        }
-        
+                color: white;
+            }
+            
         /* Calendar styling */
         .calendar-header {
             display: flex;
@@ -253,7 +449,6 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
-            width: 100%;
         }
         
         .calendar-day-header {
@@ -302,20 +497,40 @@
         }
         
         .calendar-exam.past-exam {
-            background-color: #e0e0e0;
+            background-color: var(--distant-color);
             text-decoration: line-through;
         }
         
         .calendar-exam.urgent-exam {
-            background-color: rgba(220, 53, 69, 0.2);
+            background-color: var(--urgent-color);
         }
         
         .calendar-exam.soon-exam {
-            background-color: rgba(255, 193, 7, 0.2);
+            background-color: var(--soon-color);
         }
         
         .calendar-exam.upcoming-exam {
-            background-color: rgba(40, 167, 69, 0.2);
+            background-color: var(--upcoming-color);
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .export-btn:hover {
+            background-color: var(--accent-color);
         }
     </style>
 </head>
@@ -344,14 +559,17 @@
         <div class="view-options">
             <button class="view-btn active" id="subjects-btn" data-view="subjects">By Subject</button>
             <button class="view-btn" id="chronological-btn" data-view="chronological">Chronological</button>
-            <button class="view-btn" id="calendar-btn" data-view="calendar">Calendar</button>
         </div>
         
         <!-- Create a single container to hold all views -->
         <div id="exam-view">
             <div class="exam-table-container" id="subjects-container"></div>
             <div class="exam-table-container" id="chronological-container" style="display: none;"></div>
-            <div class="calendar-container" id="calendar-container" style="display: none;"></div>
+        </div>
+
+        <!-- Add export to calendar button under the tables -->
+        <div class="export-container">
+            <button id="export-calendar" class="export-btn">Export to Calendar</button>
         </div>
     </div>
 
@@ -393,10 +611,10 @@
                 { name: "P2 Practical", date: "May 21st" }
             ]
         };
-        
+
         // Initialize exams
-        exams = defaultExams;
-        
+            exams = defaultExams;
+            
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize only once with a flag
             if (!window.appInitialized) {
@@ -425,17 +643,16 @@
 
             // Make sure containers exist
             const subjectsContainer = document.getElementById('subjects-container');
-            const chronologicalContainer = document.getElementById('chronological-container');
-            const calendarContainer = document.getElementById('calendar-container');
+                const chronologicalContainer = document.getElementById('chronological-container');
             
-            if (!subjectsContainer || !chronologicalContainer || !calendarContainer) {
+            if (!subjectsContainer || !chronologicalContainer) {
                 console.error('One or more tab containers not found');
-                return;
-            }
-            
+                    return;
+                }
+                
             // Reset display styles to ensure clean state
-            document.querySelectorAll('.exam-table-container, .calendar-container').forEach(container => {
-                container.style.display = 'none';
+            document.querySelectorAll('.exam-table-container').forEach(container => {
+                container.style.display = 'block';
             });
             
             // Set initial tab visibility
@@ -489,7 +706,7 @@
             console.log('Switching to tab:', tabName);
             
             // Get all containers first
-            const allContainers = document.querySelectorAll('.exam-table-container, .calendar-container');
+            const allContainers = document.querySelectorAll('.exam-table-container');
             
             // Hide all of them explicitly
             allContainers.forEach(container => {
@@ -518,14 +735,12 @@
                     renderSubjects();
                 } else if (tabName === 'chronological') {
                     renderExamsInOrder();
-                } else if (tabName === 'calendar') {
-                    renderCalendarView();
                 }
             } else {
                 console.error('Container not found:', tabName + '-container');
             }
         }
-        
+
         // Function to render subjects
         function renderSubjects() {
             try {
@@ -638,14 +853,14 @@
                             if (exam.date) {
                                 // Parse the date string (e.g., "April 11th")
                                 const dateStr = exam.date;
-                                const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
-                                const match = dateStr.match(regex);
-                                
+                const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
+                const match = dateStr.match(regex);
+                
                                 if (match) {
-                                    const monthName = match[1];
-                                    const day = parseInt(match[2], 10);
-                                    const year = new Date().getFullYear();
-                                    const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
+                const monthName = match[1];
+                const day = parseInt(match[2], 10);
+                const year = new Date().getFullYear();
+                const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
                                     const dateObj = new Date(year, monthIndex, day);
                                     
                                     if (!isNaN(dateObj.getTime())) {
@@ -749,197 +964,6 @@
             }
         }
         
-        // Function to render calendar view
-        function renderCalendarView() {
-            try {
-                console.log('Rendering calendar view');
-                
-                // Get the calendar container
-                const calendarContainer = document.getElementById('calendar-container');
-                if (!calendarContainer) {
-                    console.error('Calendar container not found');
-                    return;
-                }
-                
-                // Clear previous content
-                calendarContainer.innerHTML = '';
-                
-                // Get current month and year
-                const today = new Date();
-                let displayMonth = today.getMonth();
-                let displayYear = today.getFullYear();
-                
-                // Create calendar header with navigation
-                const calendarHeader = document.createElement('div');
-                calendarHeader.className = 'calendar-header';
-                
-                const prevMonthBtn = document.createElement('button');
-                prevMonthBtn.className = 'calendar-nav-btn';
-                prevMonthBtn.innerHTML = '&laquo; Prev';
-                
-                const monthYearDisplay = document.createElement('h2');
-                monthYearDisplay.className = 'month-year-display';
-                
-                const nextMonthBtn = document.createElement('button');
-                nextMonthBtn.className = 'calendar-nav-btn';
-                nextMonthBtn.innerHTML = 'Next &raquo;';
-                
-                calendarHeader.appendChild(prevMonthBtn);
-                calendarHeader.appendChild(monthYearDisplay);
-                calendarHeader.appendChild(nextMonthBtn);
-                calendarContainer.appendChild(calendarHeader);
-                
-                // Create calendar grid container
-                const calendarGrid = document.createElement('div');
-                calendarGrid.className = 'calendar-grid';
-                calendarContainer.appendChild(calendarGrid);
-                
-                // Function to generate the calendar for a specific month and year
-                function generateCalendar(month, year) {
-                    // Update header display
-                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                                       'July', 'August', 'September', 'October', 'November', 'December'];
-                    monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
-                    
-                    // Clear previous calendar
-                    calendarGrid.innerHTML = '';
-                    
-                    // Add day headers
-                    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                    dayNames.forEach(day => {
-                        const dayHeader = document.createElement('div');
-                        dayHeader.className = 'calendar-day-header';
-                        dayHeader.textContent = day;
-                        calendarGrid.appendChild(dayHeader);
-                    });
-                    
-                    // Get first day of the month and number of days
-                    const firstDay = new Date(year, month, 1).getDay();
-                    const daysInMonth = new Date(year, month + 1, 0).getDate();
-                    
-                    // Add blank cells for days before the 1st of the month
-                    for (let i = 0; i < firstDay; i++) {
-                        const emptyDay = document.createElement('div');
-                        emptyDay.className = 'calendar-day empty';
-                        calendarGrid.appendChild(emptyDay);
-                    }
-                    
-                    // Collect all exam dates for this month
-                    const monthExams = [];
-                    
-                    Object.entries(exams).forEach(([subject, examList]) => {
-                        examList.forEach(exam => {
-                            try {
-                                if (exam.date) {
-                                    const dateStr = exam.date;
-                                    const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
-                                    const match = dateStr.match(regex);
-                                    
-                                    if (match) {
-                                        const monthName = match[1];
-                                        const day = parseInt(match[2], 10);
-                                        const examMonth = new Date(`${monthName} 1, 2000`).getMonth();
-                                        
-                                        if (examMonth === month) {
-                                            monthExams.push({
-                                                day: day,
-                                                subject: subject,
-                                                name: exam.name,
-                                                dateStr: exam.date
-                                            });
-                                        }
-                                    }
-                                }
-                            } catch (error) {
-                                console.error('Error processing exam date for calendar:', error);
-                            }
-                        });
-                    });
-                    
-                    // Create calendar days
-                    for (let day = 1; day <= daysInMonth; day++) {
-                        const dayCell = document.createElement('div');
-                        dayCell.className = 'calendar-day';
-                        
-                        // Check if this is today
-                        const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
-                        if (isToday) {
-                            dayCell.classList.add('today');
-                        }
-                        
-                        // Add day number
-                        const dayNumber = document.createElement('div');
-                        dayNumber.className = 'day-number';
-                        dayNumber.textContent = day;
-                        dayCell.appendChild(dayNumber);
-                        
-                        // Add exams for this day
-                        const dayExams = monthExams.filter(exam => exam.day === day);
-                        
-                        if (dayExams.length > 0) {
-                            dayCell.classList.add('has-exams');
-                            
-                            const examsList = document.createElement('div');
-                            examsList.className = 'day-exams';
-                            
-                            dayExams.forEach(exam => {
-                                const examItem = document.createElement('div');
-                                examItem.className = 'calendar-exam';
-                                
-                                // Calculate days left
-                                const daysLeft = calculateDaysLeft(exam.dateStr);
-                                
-                                // Add appropriate class based on urgency
-                                if (daysLeft < 0) {
-                                    examItem.classList.add('past-exam');
-                                } else if (daysLeft <= 7) {
-                                    examItem.classList.add('urgent-exam');
-                                } else if (daysLeft <= 14) {
-                                    examItem.classList.add('soon-exam');
-                                } else if (daysLeft <= 30) {
-                                    examItem.classList.add('upcoming-exam');
-                                }
-                                
-                                examItem.textContent = `${exam.subject}: ${exam.name}`;
-                                examItem.title = `${exam.subject}: ${exam.name} (${exam.dateStr})`;
-                                
-                                examsList.appendChild(examItem);
-                            });
-                            
-                            dayCell.appendChild(examsList);
-                        }
-                        
-                        calendarGrid.appendChild(dayCell);
-                    }
-                }
-                
-                // Initial calendar generation
-                generateCalendar(displayMonth, displayYear);
-                
-                // Add event listeners for navigation
-                prevMonthBtn.addEventListener('click', function() {
-                    displayMonth--;
-                    if (displayMonth < 0) {
-                        displayMonth = 11;
-                        displayYear--;
-                    }
-                    generateCalendar(displayMonth, displayYear);
-                });
-                
-                nextMonthBtn.addEventListener('click', function() {
-                    displayMonth++;
-                    if (displayMonth > 11) {
-                        displayMonth = 0;
-                        displayYear++;
-                    }
-                    generateCalendar(displayMonth, displayYear);
-                });
-                
-            } catch (error) {
-                console.error('Error rendering calendar view:', error);
-            }
-        }
-        
         // Function to update days left display
         function updateDaysLeftDisplay(element, daysLeft) {
             // Clear existing classes
@@ -1019,6 +1043,36 @@
                 return 999;
             }
         }
+
+        // Function to export exams to .ics format
+        function exportToCalendar() {
+            let icsContent = 'BEGIN:VCALENDAR\nVERSION:2.0\n';
+            Object.entries(exams).forEach(([subject, examList]) => {
+                examList.forEach(exam => {
+                    const dateStr = exam.date;
+                    const regex = /([A-Za-z]+)\s+(\d+)(?:st|nd|rd|th)/;
+                    const match = dateStr.match(regex);
+                    if (match) {
+                        const monthName = match[1];
+                        const day = parseInt(match[2], 10);
+                        const year = new Date().getFullYear();
+                        const monthIndex = new Date(`${monthName} 1, 2000`).getMonth();
+                        const examDate = new Date(year, monthIndex, day);
+                        const formattedDate = examDate.toISOString().replace(/-|:|\.\d{3}/g, '');
+                        icsContent += `BEGIN:VEVENT\nSUMMARY:${subject} - ${exam.name}\nDTSTART:${formattedDate}\nDTEND:${formattedDate}\nDESCRIPTION:${subject} - ${exam.name}\nEND:VEVENT\n`;
+                    }
+                });
+            });
+            icsContent += 'END:VCALENDAR';
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'exams.ics';
+            link.click();
+        }
+
+        // Add event listener to export button
+        document.getElementById('export-calendar').addEventListener('click', exportToCalendar);
     </script>
 </body>
 </html>
