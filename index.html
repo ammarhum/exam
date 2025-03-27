@@ -17,6 +17,20 @@
     <!-- External CSS -->
     <link rel="stylesheet" href="./styles.css">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: white;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --urgent-color: #dc3545;
+            --soon-color: #ffc107;
+            --upcoming-color: #28a745;
+            --distant-color: #6c757d;
+        }
+        
         .splash-screen {
             position: fixed;
             top: 0;
@@ -53,8 +67,8 @@
             font-size: 16px;
             color: #777;
         }
-        
-        /* Container fixes for mobile */
+
+        /* Basic mobile responsiveness */
         @media screen and (max-width: 767px) {
             .container {
                 width: 100%;
@@ -62,7 +76,6 @@
                 padding: 10px;
                 margin: 0;
                 box-sizing: border-box;
-                overflow-x: hidden;
             }
             
             .header h1 {
@@ -76,7 +89,6 @@
                 margin: 0;
             }
             
-            /* Table specific fixes */
             .table-container {
                 width: 100%;
                 margin: 0 0 20px 0;
@@ -92,369 +104,176 @@
             }
         }
         
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            overflow: auto;
+        /* View options styling */
+        .view-options {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
         }
         
-        .modal-content {
-            background-color: #fefefe;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 80%;
-            max-width: 500px;
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
+        .view-btn {
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         
-        .close-modal:hover {
-            color: #333;
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
         
-        .form-group {
+        /* Table styling */
+        .subject-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        
+        .subject-table caption {
+            font-weight: bold;
+            padding: 12px 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .subject-table th {
+            padding: 10px 8px;
+            font-size: 14px;
+            text-align: left;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .subject-table td {
+            padding: 10px 8px;
+            vertical-align: middle;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .days-left-value {
+            display: inline-block;
+            text-align: center;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-weight: bold;
+        }
+        
+        .days-urgent {
+            background-color: var(--urgent-color);
+            color: white;
+        }
+        
+        .days-soon {
+            background-color: var(--soon-color);
+        }
+        
+        .days-upcoming {
+            background-color: var(--upcoming-color);
+            color: white;
+        }
+        
+        .days-distant {
+            background-color: var(--distant-color);
+            color: white;
+        }
+        
+        /* Calendar styling */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        .form-group small {
-            display: block;
-            color: #777;
-            margin-top: 5px;
-            font-size: 12px;
-        }
-        
-        .form-actions {
-            text-align: right;
-        }
-        
-        .submit-btn {
-            background-color: var(--primary-color, #3498db);
+        .calendar-nav-btn {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 5px;
             cursor: pointer;
         }
         
-        .submit-btn:hover {
-            background-color: #2980b9;
+        .month-year-display {
+            margin: 0;
+            font-size: 1.5rem;
         }
         
-        .remove-btn {
-            background-color: #e74c3c;
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
         }
         
-        .remove-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        .add-icon {
+        .calendar-day-header {
+            text-align: center;
             font-weight: bold;
-            font-size: 18px;
-            margin-right: 5px;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
         }
         
-        .remove-icon {
+        .calendar-day {
+            min-height: 100px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .calendar-day.empty {
+            background-color: #f9f9f9;
+        }
+        
+        .calendar-day.today {
+            border: 2px solid var(--accent-color);
+        }
+        
+        .day-number {
             font-weight: bold;
-            font-size: 18px;
-            margin-right: 5px;
+            margin-bottom: 5px;
         }
         
-        /* Mobile specific fixes */
-        @media (max-width: 480px) {
-            .view-options {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            
-            .view-btn {
-                padding: 10px;
-                margin: 5px;
-                min-width: 90px;
-            }
-            
-            .subject-table, .chronological-table {
-                display: block;
-                width: 100% !important;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                table-layout: fixed !important;
-                font-size: 14px;
-                border-collapse: collapse;
-                min-width: 100% !important;
-                margin: 0 !important;
-            }
-            
-            /* Fix for "By Subject" tab on iPhone */
-            .table-container {
-                margin-bottom: 20px !important;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                background-color: #fff;
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 0 !important;
-                margin: 0 0 20px 0 !important;
-                box-sizing: border-box;
-            }
-            
-            .subject-table caption {
-                font-weight: bold;
-                padding: 12px 8px;
-                background-color: var(--primary-color, #3498db);
-                color: white;
-                font-size: 16px;
-                text-align: center;
-                width: 100%;
-            }
-            
-            .subject-table th {
-                white-space: nowrap;
-                padding: 10px 8px;
-                font-size: 14px;
-                text-align: left;
-                background-color: #f5f5f5;
-                border-bottom: 1px solid #ddd;
-            }
-            
-            .subject-table td {
-                padding: 10px 8px;
-                vertical-align: middle;
-                border-bottom: 1px solid #eee;
-            }
-            
-            /* Force column widths */
-            .exam-name-header, .exam-name {
-                width: 45% !important;
-                max-width: 45% !important;
-            }
-            
-            .exam-date-header, .exam-date {
-                width: 30% !important;
-                max-width: 30% !important;
-                white-space: nowrap;
-            }
-            
-            .days-left-header, .days-left {
-                width: 25% !important;
-                max-width: 25% !important;
-                text-align: center;
-            }
-            
-            .days-left-value {
-                min-width: 60px;
-                display: inline-block;
-                text-align: center;
-                border-radius: 4px;
-                padding: 4px 2px;
-                font-weight: bold;
-            }
-            
-            /* Fixed stronger background colors for days left indicators */
-            .days-urgent {
-                background-color: rgba(255, 87, 87, 0.7);
-                color: white;
-            }
-            
-            .days-soon {
-                background-color: rgba(255, 193, 7, 0.7);
-            }
-            
-            .days-upcoming {
-                background-color: rgba(76, 175, 80, 0.7);
-                color: white;
-            }
-            
-            .days-distant {
-                background-color: rgba(33, 150, 243, 0.7);
-                color: white;
-            }
-            
-            /* Container fixes for small screens */
-            .container {
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 10px !important;
-                margin: 0 !important;
-                box-sizing: border-box;
-                overflow-x: hidden;
-            }
-            
-            .exam-table-container {
-                width: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            
-            /* Improve row display */
-            .subject-table tr, .chronological-table tr {
-                width: 100% !important;
-                display: table-row !important;
-            }
-            
-            /* Fix for iOS Safari - most important fixes */
-            @supports (-webkit-touch-callout: none) {
-                /* Subject table specific fixes for iOS */
-                #subjects-container {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    display: block !important;
-                }
-                
-                /* Table container fixes for iOS */
-                .table-container {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    min-width: 100% !important;
-                    margin: 0 0 20px 0 !important;
-                    padding: 0 !important;
-                    border-radius: 8px !important;
-                    overflow: hidden !important;
-                    box-sizing: border-box !important;
-                    display: block !important;
-                }
-                
-                /* Table fixes for iOS */
-                .subject-table, .chronological-table {
-                    width: 100% !important;
-                    min-width: 100% !important;
-                    max-width: 100% !important;
-                    table-layout: fixed !important;
-                    border-collapse: collapse !important;
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    display: table !important;
-                    border-spacing: 0 !important;
-                }
-                
-                /* Row fixes for iOS */
-                .subject-table tr, .chronological-table tr {
-                    display: table-row !important;
-                    width: 100% !important;
-                }
-                
-                /* Header and cell fixes for iOS */
-                .subject-table th, .subject-table td,
-                .chronological-table th, .chronological-table td {
-                    display: table-cell !important;
-                    box-sizing: border-box !important;
-                    overflow: hidden !important;
-                    text-overflow: ellipsis !important;
-                }
-                
-                /* Header row fixes for iOS */
-                .subject-table thead, .chronological-table thead {
-                    display: table-header-group !important;
-                }
-                
-                /* Body fixes for iOS */
-                .subject-table tbody, .chronological-table tbody {
-                    display: table-row-group !important;
-                }
-                
-                /* Caption fixes for iOS */
-                .subject-table caption {
-                    display: table-caption !important;
-                    width: 100% !important;
-                    box-sizing: border-box !important;
-                }
-                
-                /* Force column sizes with !important on iOS */
-                .exam-name-header, .exam-name {
-                    width: 45% !important;
-                    min-width: 45% !important;
-                    max-width: 45% !important;
-                }
-                
-                .exam-date-header, .exam-date {
-                    width: 30% !important;
-                    min-width: 30% !important;
-                    max-width: 30% !important;
-                    white-space: nowrap !important;
-                }
-                
-                .days-left-header, .days-left {
-                    width: 25% !important;
-                    min-width: 25% !important;
-                    max-width: 25% !important;
-                    text-align: center !important;
-                }
-                
-                /* Calendar view fixes for iOS */
-                .calendar-container {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    overflow-x: hidden !important;
-                }
-                
-                .calendar-grid {
-                    display: grid !important;
-                    width: 100% !important;
-                    grid-template-columns: repeat(7, 1fr) !important;
-                    gap: 5px !important;
-                }
-                
-                .calendar-day-header, .calendar-day {
-                    width: 100% !important;
-                    box-sizing: border-box !important;
-                }
-                
-                /* Prevent text size adjustment */
-                html, body {
-                    width: 100% !important;
-                    overflow-x: hidden !important;
-                    position: relative !important;
-                    -webkit-text-size-adjust: 100% !important;
-                }
-                
-                /* Fix display of container elements */
-                #exam-view, .exam-table-container, #subjects-container, #chronological-container, #calendar-container {
-                    width: 100% !important;
-                    max-width: 100% !important;
-                    overflow-x: hidden !important;
-                    box-sizing: border-box !important;
-                }
-            }
+        .day-exams {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .calendar-exam {
+            font-size: 0.8rem;
+            padding: 2px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .calendar-exam.past-exam {
+            background-color: #e0e0e0;
+            text-decoration: line-through;
+        }
+        
+        .calendar-exam.urgent-exam {
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+        
+        .calendar-exam.soon-exam {
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+        
+        .calendar-exam.upcoming-exam {
+            background-color: rgba(40, 167, 69, 0.2);
         }
     </style>
 </head>
@@ -492,18 +311,6 @@
             <div class="exam-table-container" id="chronological-container" style="display: none;"></div>
             <div class="calendar-container" id="calendar-container" style="display: none;"></div>
         </div>
-
-        <!-- Controls section -->
-        <div class="controls">
-            <!-- Buttons removed as requested -->
-        </div>
-    </div>
-    
-    <!-- Floating action buttons -->
-    <div class="floating-action-buttons">
-        <button class="fab" id="floating-scroll-top" title="Back to Top">
-            <span>⬆</span>
-        </button>
     </div>
 
     <footer>
@@ -574,7 +381,7 @@
                 }, 500);
             }
 
-            // Make sure containers exist and have proper initial display styles
+            // Make sure containers exist
             const subjectsContainer = document.getElementById('subjects-container');
             const chronologicalContainer = document.getElementById('chronological-container');
             const calendarContainer = document.getElementById('calendar-container');
@@ -646,7 +453,6 @@
             allContainers.forEach(container => {
                 container.style.display = 'none';
             });
-            console.log('All containers hidden');
             
             // Update all buttons (remove active class)
             const allButtons = document.querySelectorAll('.view-btn');
@@ -664,7 +470,6 @@
             const targetContainer = document.getElementById(tabName + '-container');
             if (targetContainer) {
                 targetContainer.style.display = 'block';
-                console.log('Showing container:', tabName + '-container');
                 
                 // Render content as needed
                 if (tabName === 'subjects') {
@@ -925,35 +730,17 @@
                 // Create calendar header with navigation
                 const calendarHeader = document.createElement('div');
                 calendarHeader.className = 'calendar-header';
-                calendarHeader.style.display = 'flex';
-                calendarHeader.style.justifyContent = 'space-between';
-                calendarHeader.style.alignItems = 'center';
-                calendarHeader.style.marginBottom = '20px';
                 
                 const prevMonthBtn = document.createElement('button');
                 prevMonthBtn.className = 'calendar-nav-btn';
                 prevMonthBtn.innerHTML = '&laquo; Prev';
-                prevMonthBtn.style.padding = '10px 15px';
-                prevMonthBtn.style.backgroundColor = '#3498db';
-                prevMonthBtn.style.color = 'white';
-                prevMonthBtn.style.border = 'none';
-                prevMonthBtn.style.borderRadius = '5px';
-                prevMonthBtn.style.cursor = 'pointer';
                 
                 const monthYearDisplay = document.createElement('h2');
                 monthYearDisplay.className = 'month-year-display';
-                monthYearDisplay.style.margin = '0';
-                monthYearDisplay.style.fontSize = '1.5rem';
                 
                 const nextMonthBtn = document.createElement('button');
                 nextMonthBtn.className = 'calendar-nav-btn';
                 nextMonthBtn.innerHTML = 'Next &raquo;';
-                nextMonthBtn.style.padding = '10px 15px';
-                nextMonthBtn.style.backgroundColor = '#3498db';
-                nextMonthBtn.style.color = 'white';
-                nextMonthBtn.style.border = 'none';
-                nextMonthBtn.style.borderRadius = '5px';
-                nextMonthBtn.style.cursor = 'pointer';
                 
                 calendarHeader.appendChild(prevMonthBtn);
                 calendarHeader.appendChild(monthYearDisplay);
@@ -963,9 +750,6 @@
                 // Create calendar grid container
                 const calendarGrid = document.createElement('div');
                 calendarGrid.className = 'calendar-grid';
-                calendarGrid.style.display = 'grid';
-                calendarGrid.style.gridTemplateColumns = 'repeat(7, 1fr)';
-                calendarGrid.style.gap = '5px';
                 calendarContainer.appendChild(calendarGrid);
                 
                 // Function to generate the calendar for a specific month and year
@@ -984,12 +768,6 @@
                         const dayHeader = document.createElement('div');
                         dayHeader.className = 'calendar-day-header';
                         dayHeader.textContent = day;
-                        dayHeader.style.textAlign = 'center';
-                        dayHeader.style.fontWeight = 'bold';
-                        dayHeader.style.padding = '10px';
-                        dayHeader.style.backgroundColor = '#3498db';
-                        dayHeader.style.color = 'white';
-                        
                         calendarGrid.appendChild(dayHeader);
                     });
                     
@@ -1001,9 +779,6 @@
                     for (let i = 0; i < firstDay; i++) {
                         const emptyDay = document.createElement('div');
                         emptyDay.className = 'calendar-day empty';
-                        emptyDay.style.backgroundColor = '#f9f9f9';
-                        emptyDay.style.minHeight = '100px';
-                        
                         calendarGrid.appendChild(emptyDay);
                     }
                     
@@ -1043,26 +818,17 @@
                     for (let day = 1; day <= daysInMonth; day++) {
                         const dayCell = document.createElement('div');
                         dayCell.className = 'calendar-day';
-                        dayCell.style.border = '1px solid #ddd';
-                        dayCell.style.backgroundColor = '#fff';
-                        dayCell.style.borderRadius = '5px';
-                        dayCell.style.overflow = 'hidden';
-                        dayCell.style.minHeight = '100px';
-                        dayCell.style.padding = '5px';
                         
                         // Check if this is today
                         const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
                         if (isToday) {
                             dayCell.classList.add('today');
-                            dayCell.style.border = '2px solid #3498db';
                         }
                         
                         // Add day number
                         const dayNumber = document.createElement('div');
                         dayNumber.className = 'day-number';
                         dayNumber.textContent = day;
-                        dayNumber.style.fontWeight = 'bold';
-                        dayNumber.style.marginBottom = '5px';
                         dayCell.appendChild(dayNumber);
                         
                         // Add exams for this day
@@ -1070,20 +836,13 @@
                         
                         if (dayExams.length > 0) {
                             dayCell.classList.add('has-exams');
-                            dayCell.style.backgroundColor = '#f0f8ff';
                             
                             const examsList = document.createElement('div');
                             examsList.className = 'day-exams';
-                            examsList.style.display = 'flex';
-                            examsList.style.flexDirection = 'column';
-                            examsList.style.gap = '3px';
                             
                             dayExams.forEach(exam => {
                                 const examItem = document.createElement('div');
                                 examItem.className = 'calendar-exam';
-                                examItem.style.fontSize = '0.8rem';
-                                examItem.style.padding = '2px 5px';
-                                examItem.style.borderRadius = '3px';
                                 
                                 // Calculate days left
                                 const daysLeft = calculateDaysLeft(exam.dateStr);
@@ -1091,19 +850,12 @@
                                 // Add appropriate class based on urgency
                                 if (daysLeft < 0) {
                                     examItem.classList.add('past-exam');
-                                    examItem.style.backgroundColor = '#e0e0e0';
-                                    examItem.style.textDecoration = 'line-through';
                                 } else if (daysLeft <= 7) {
                                     examItem.classList.add('urgent-exam');
-                                    examItem.style.backgroundColor = '#ffcdd2';
                                 } else if (daysLeft <= 14) {
                                     examItem.classList.add('soon-exam');
-                                    examItem.style.backgroundColor = '#fff9c4';
                                 } else if (daysLeft <= 30) {
                                     examItem.classList.add('upcoming-exam');
-                                    examItem.style.backgroundColor = '#c8e6c9';
-                                } else {
-                                    examItem.style.backgroundColor = '#e0f7fa';
                                 }
                                 
                                 examItem.textContent = `${exam.subject}: ${exam.name}`;
@@ -1143,11 +895,6 @@
                 
             } catch (error) {
                 console.error('Error rendering calendar view:', error);
-                // Create fallback UI in case of error
-                const calendarContainer = document.getElementById('calendar-container');
-                if (calendarContainer) {
-                    calendarContainer.innerHTML = '<div class="error-message" style="color: red; padding: 15px; text-align: center;">Error rendering calendar view. Please try refreshing the page.</div>';
-                }
             }
         }
         
