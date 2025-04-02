@@ -11,8 +11,8 @@ function initChecklistSync() {
   // Get Firestore instance
   db = firebase.firestore();
   
-  // Reference to checklist collection
-  checklistCollection = db.collection('checklist-items');
+  // Reference to checklist collection - MUST MATCH the name in firebase-config.js
+  checklistCollection = db.collection('checklist');
   
   // Generate or retrieve a local user ID to identify this device
   localUserId = getOrCreateLocalUserId();
