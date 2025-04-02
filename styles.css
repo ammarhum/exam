@@ -2134,4 +2134,27 @@ tr.past-exam td {
 
 #subjects-container .subject-table td:last-child {
     text-align: center;
+}
+
+/* New checkbox styles */
+.paper-checkbox {
+    margin-left: auto;
+    margin-right: 5px;
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+    accent-color: var(--accent-color);
+}
+
+.completed-paper {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Ensure mobile responsiveness */
+@media (max-width: 768px) {
+    .paper-checkbox {
+        height: 16px;
+        width: 16px;
+    }
 } 
