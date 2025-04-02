@@ -43,94 +43,391 @@
             overflow: hidden;
             box-shadow: 0 1px 8px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            padding: 15px;
-        }
-        
-        .month-container h3 {
-            margin-top: 20px;
-            padding: 8px 10px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 4px;
-        }
-        
-        .month-container h3.exam-day {
-            background-color: var(--urgent-color);
-        }
-        
-        .month-container ul {
-            list-style: none;
             padding: 0;
-            margin: 10px 0;
         }
         
-        .month-container li {
-            margin-bottom: 8px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
+        .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        .month-container li.completed-paper {
-            background-color: #e8f5e9;
-            text-decoration: line-through;
+        .month-year-display {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .calendar-nav-btn {
+            padding: 8px 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .calendar-nav-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            width: 100%;
+            background-color: var(--border-color);
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 500;
+            padding: 10px 5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 13px;
+        }
+        
+        .calendar-day {
+            min-height: 80px;
+            background-color: white;
+            padding: 8px;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .calendar-day.empty {
+            background-color: #f8f9fa;
+        }
+        
+        .calendar-day.today {
+            background-color: rgba(52, 152, 219, 0.08);
+        }
+        
+        .day-number {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #444;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .today .day-number:after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -4px;
+            width: 25px;
+            height: 25px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            z-index: -1;
             opacity: 0.8;
         }
         
-        .subject-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            margin-right: 8px;
+        .today .day-number {
             color: white;
-            font-weight: bold;
-            font-size: 0.9em;
+            margin-left: 4px;
+            z-index: 2;
         }
         
-        .maths {
-            background-color: #3498db;
+        .day-exams {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 4px;
         }
         
-        .chemistry {
-            background-color: #e74c3c;
+        .calendar-exam {
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 2px;
+            color: white;
         }
         
-        .physics {
-            background-color: #9b59b6;
+        .calendar-exam:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .cs {
-            background-color: #2ecc71;
+        .calendar-exam.past-exam {
+            background-color: var(--distant-color);
+            opacity: 0.7;
+            text-decoration: line-through;
         }
         
-        .exam-badge {
+        .calendar-exam.urgent-exam {
+            background-color: var(--urgent-color);
+        }
+        
+        .calendar-exam.soon-exam {
+            background-color: var(--soon-color);
+            color: #333; /* Dark text for better contrast on yellow */
+        }
+        
+        .calendar-exam.upcoming-exam {
+            background-color: var(--upcoming-color);
+        }
+        
+        /* Mobile calendar adjustments */
+        @media screen and (max-width: 767px) {
+            .calendar-container {
+                padding: 0;
+                width: 100%;
+                overflow-x: hidden;
+                border-radius: 10px;
+            }
+            
+            .calendar-grid {
+                gap: 1px;
+            }
+            
+            .calendar-day-header {
+                padding: 8px 3px;
+                font-size: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+            
+            .day-number {
+                margin-bottom: 2px;
+                font-size: 12px;
+            }
+            
+            .calendar-exam {
+                font-size: 9px;
+                padding: 2px 4px;
+                margin-bottom: 1px;
+                border-radius: 3px;
+            }
+            
+            .month-year-display {
+                font-size: 1.1rem;
+            }
+            
+            .calendar-header {
+                padding: 12px 10px;
+            }
+            
+            .calendar-nav-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            
+            .today .day-number:after {
+                width: 22px;
+                height: 22px;
+            }
+        }
+        
+        /* Update table styling to match the new color scheme */
+        .subject-table caption {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .days-urgent {
             background-color: var(--urgent-color);
             color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-            font-size: 0.8em;
-            font-weight: bold;
         }
         
-        .final-review {
-            background-color: var(--accent-color);
+        .days-soon {
+            background-color: var(--soon-color);
+            color: #333; /* Dark text for better contrast on yellow */
+        }
+        
+        .days-upcoming {
+            background-color: var(--upcoming-color);
             color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-            font-size: 0.8em;
         }
         
-        .paper-checkbox {
-            transform: scale(1.3);
-            margin-left: 10px;
+        .days-distant {
+            background-color: var(--distant-color);
+            color: white;
+        }
+        
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .splash-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .splash-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .splash-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .splash-subtitle {
+            font-size: 16px;
+            color: #777;
+        }
+        
+        /* Basic mobile responsiveness */
+        @media screen and (max-width: 767px) {
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: 10px;
+                margin: 0;
+                box-sizing: border-box;
+            }
+            
+            .header h1 {
+                text-align: center;
+                margin: 10px 0;
+            }
+            
+            .exam-table-container {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .table-container {
+                width: 100%;
+                margin: 0 0 20px 0;
+                border-radius: 8px;
+                overflow: hidden;
+                padding: 0;
+            }
+            
+            table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+            }
+        }
+        
+        /* View options styling */
+        .view-options {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+        
+        .view-btn {
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Table styling */
+        .subject-table {
+            width: 100%;
+                border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            }
+            
+            .subject-table caption {
+                font-weight: bold;
+                padding: 12px 8px;
+            background-color: var(--primary-color);
+                color: white;
+                font-size: 16px;
+                text-align: center;
+            }
+            
+            .subject-table th {
+                padding: 10px 8px;
+                font-size: 14px;
+                text-align: left;
+                background-color: #f5f5f5;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .subject-table td {
+                padding: 10px 8px;
+                vertical-align: middle;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .days-left-value {
+                display: inline-block;
+                text-align: center;
+                border-radius: 4px;
+            padding: 4px 8px;
+                font-weight: bold;
+            }
+            
+            .days-urgent {
+            background-color: var(--urgent-color);
+                color: white;
+            }
+            
+            .days-soon {
+            background-color: var(--soon-color);
+            color: #333; /* Dark text for better contrast on yellow */
+            }
+            
+            .days-upcoming {
+            background-color: var(--upcoming-color);
+                color: white;
+            }
+            
+            .days-distant {
+            background-color: var(--distant-color);
+                color: white;
+            }
+            
         /* Calendar styling */
         .calendar-header {
             display: flex;
@@ -291,7 +588,7 @@
             <h1>Prayer Times Countdown</h1>
             <div class="prayer-times" id="prayer-times-container">
                 Loading prayer times...
-        </div>
+            </div>
         </div>
         
         <!-- Schedule tab content -->
@@ -301,140 +598,10 @@
                 <div class="schedule-actions">
                     <button id="reset-checklist" class="action-button">Reset All Items</button>
                     <button id="export-calendar" class="action-button">Export to Calendar</button>
-                    </div>
                 </div>
+            </div>
             <div id="schedule-container" class="schedule-container">
-                <h1>Exam Preparation Schedule</h1>
-                
-                <div class="calendar-container">
-                    <div class="month-container">
-                        <h3>April 4 (Friday)</h3>
-                        <ul>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper"></li>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper"></li>
-                        </ul>
-                        
-                        <h3>April 5 (Saturday)</h3>
-                        <ul>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper"></li>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper-2"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-2"></li>
-                        </ul>
-                        
-                        <h3>April 6 (Sunday)</h3>
-                        <ul>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-2"></li>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-2"></li>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper-3"></li>
-                        </ul>
-                        
-                        <h3>April 7 (Monday)</h3>
-                        <ul>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-3"></li>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-3"></li>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-3"></li>
-                        </ul>
-                        
-                        <h3>April 8 (Tuesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper-4"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-4"></li>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-4"></li>
-                        </ul>
-                        
-                        <h3>April 9 (Wednesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-4"></li>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper-5"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-5"></li>
-                        </ul>
-                        
-                        <h3>April 10 (Thursday)</h3>
-                        <ul>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-5"></li>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-5"></li>
-                            <li><span class="subject-badge maths">Maths</span> 2H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-2h-paper"></li>
-                        </ul>
-                        
-                        <h3>April 11 (Friday)</h3>
-                        <ul>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-6"></li>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-6"></li>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-6"></li>
-                        </ul>
-                        
-                        <h3>April 12 (Saturday)</h3>
-                        <ul>
-                            <li><span class="subject-badge maths">Maths</span> 2H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-2h-paper-2"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-7"></li>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-7"></li>
-                        </ul>
-                        
-                        <h3>April 13 (Sunday)</h3>
-                        <ul>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-7"></li>
-                            <li><span class="subject-badge maths">Maths</span> 2H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-2h-paper-3"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p6-practical-paper"></li>
-                        </ul>
-                        
-                        <h3>April 14 (Monday)</h3>
-                        <ul>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-8"></li>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-8"></li>
-                            <li><span class="subject-badge maths">Maths</span> 2H Paper <input type="checkbox" class="paper-checkbox" data-id="maths-2h-paper-4"></li>
-                        </ul>
-                        
-                        <h3>April 15 (Tuesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper <input type="checkbox" class="paper-checkbox" data-id="chemistry-p6-practical-paper-2"></li>
-                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <input type="checkbox" class="paper-checkbox" data-id="physics-p6-practical-paper"></li>
-                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper <input type="checkbox" class="paper-checkbox" data-id="cs-p2-practical-paper"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">April 30 (Wednesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="chemistry-p4-theory-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">May 9 (Friday)</h3>
-                        <ul>
-                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="physics-p4-theory-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">May 12 (Monday)</h3>
-                        <ul>
-                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="cs-p1-theory-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">May 15 (Thursday)</h3>
-                        <ul>
-                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="maths-1h-paper-exam"></li>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="chemistry-p6-practical-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">May 20 (Tuesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="physics-p6-practical-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">May 21 (Wednesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="cs-p2-practical-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">June 4 (Wednesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge maths">Maths</span> 2H Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="maths-2h-paper-exam"></li>
-                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="physics-p2-multi-choice-paper-exam"></li>
-                        </ul>
-                        
-                        <h3 class="exam-day">June 10 (Tuesday)</h3>
-                        <ul>
-                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span> <input type="checkbox" class="paper-checkbox" data-id="chemistry-p2-multi-choice-paper-exam"></li>
-                        </ul>
-                    </div>
-                </div>
+                Loading schedule...
             </div>
         </div>
 
@@ -456,7 +623,7 @@
     <!-- Firebase Configuration -->
     <script src="firebase-config.js"></script>
     <script src="checklist-sync.js"></script>
-
+    
     <script>
         // Initialize global variables first to prevent reference errors
         let exams = {};
@@ -496,47 +663,120 @@
             exams = defaultExams;
             
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize checklist sync first
-            window.checklistSync.init();
-            window.checklistSync.initListeners();
+            // Initialize only once with a flag
+            if (!window.appInitialized) {
+                window.appInitialized = true;
+                initializeApp();
+            }
             
-            // Initialize tabs
-            setupTabs();
-            
-            // Initialize view for the active tab
-            loadActiveTab();
+            // Set up the tab switching functionality
+            setupTabSwitching();
         });
         
-        function setupTabs() {
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    const tabId = this.getAttribute('data-tab');
-                    document.getElementById(tabId + '-tab').classList.add('active');
-                    
-                    // Load content for the tab
-                    loadActiveTab();
+        // Function to initialize the app
+        function initializeApp() {
+            console.log('App initialized');
+            
+            // Ensure the splash screen is removed
+            const splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.classList.add('hide');
+                setTimeout(() => {
+                    if (splashScreen.parentNode) {
+                        splashScreen.parentNode.removeChild(splashScreen);
+                    }
+                }, 500);
+            }
+
+            // Make sure containers exist
+            const subjectsContainer = document.getElementById('subjects-container');
+            const chronologicalContainer = document.getElementById('chronological-container');
+            const scheduleContainer = document.getElementById('schedule-container');
+            
+            if (!subjectsContainer || !chronologicalContainer || !scheduleContainer) {
+                console.error('One or more tab containers not found');
+                return;
+            }
+            
+            // Hide all containers first
+            document.querySelectorAll('.exam-table-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Show only the subjects container
+            subjectsContainer.style.display = 'block';
+            
+            // Set subjects button as active
+            const subjectsBtn = document.querySelector('.view-btn[data-view="subjects"]');
+            if (subjectsBtn) {
+                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                subjectsBtn.classList.add('active');
+            }
+
+            // Render only the subjects view initially
+            renderSubjects();
+            
+            // Update all days left
+            updateAllDaysLeft();
+        }
+        
+        // Set up tab switching functionality
+        function setupTabSwitching() {
+            console.log('Setting up tab switching');
+            
+            // Get all tab buttons
+            const viewBtns = document.querySelectorAll('.view-btn');
+            
+            // Add click handler to each button
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-view');
+                    if (tabName) {
+                        switchToTab(tabName);
+                    }
                 });
             });
         }
         
-        function loadActiveTab() {
-            const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+        // Simplified tab switching functionality
+        function switchToTab(tabName) {
+            console.log('Switching to tab:', tabName);
             
-            if (activeTab === 'main') {
-                loadPrayerTimes();
-            } else if (activeTab === 'schedule') {
-                // Nothing to do - static content is already there
-            } else if (activeTab === 'by-subject') {
-                // Load subjects view
-            } else if (activeTab === 'exams') {
-                // Load exams view
+            // Get all containers first
+            const allContainers = document.querySelectorAll('.exam-table-container');
+            
+            // Hide all of them explicitly
+            allContainers.forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Update all buttons (remove active class)
+            const allButtons = document.querySelectorAll('.view-btn');
+            allButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            const activeButton = document.querySelector(`.view-btn[data-view="${tabName}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+            
+            // Now show only the selected container
+            const targetContainer = document.getElementById(tabName + '-container');
+            if (targetContainer) {
+                targetContainer.style.display = 'block';
+                
+                // Render content as needed
+                if (tabName === 'subjects') {
+                    renderSubjects();
+                } else if (tabName === 'chronological') {
+                    renderExamsInOrder();
+                } else if (tabName === 'schedule') {
+                    renderSchedule();
+                }
+            } else {
+                console.error('Container not found:', tabName + '-container');
             }
         }
 
@@ -790,15 +1030,15 @@
                     .then(completedPapers => {
                         // Remove loading message
                         scheduleContainer.removeChild(loadingElement);
-                
-                // Create and append the new content
-                const content = document.createElement('div');
+                        
+                        // Create and append the new content
+                        const content = document.createElement('div');
                         
                         // Generate the HTML for each month and day
                         let scheduleHTML = `
-                    <h1>Exam Preparation Schedule</h1>
-                    
-                    <div class="calendar-container">
+                            <h1>Exam Preparation Schedule</h1>
+                            
+                            <div class="calendar-container">
                                 <div class="month-container">`;
                         
                         // Function to generate list item with checkbox
@@ -1204,11 +1444,11 @@
                         
                         // Close the containers
                         scheduleHTML += `
-                        </div>
+                                </div>
                             </div>`;
-                
+                        
                         content.innerHTML = scheduleHTML;
-                scheduleContainer.appendChild(content);
+                        scheduleContainer.appendChild(content);
                         
                         // Add event listeners to checkboxes
                         const checkboxes = scheduleContainer.querySelectorAll('.paper-checkbox');
