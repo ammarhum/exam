@@ -308,6 +308,11 @@ body {
     color: white;
 }
 
+.days-past {
+    background-color: #6610f2;
+    color: white;
+}
+
 .controls {
     display: flex;
     justify-content: center;
@@ -675,7 +680,7 @@ button:focus, select:focus {
 /* Clear search button */
 .search-container {
     position: relative;
-    margin: 15px auto 25px;
+    margin: 15px auto 20px;
     max-width: 500px;
     display: flex;
     align-items: center;
@@ -1197,7 +1202,7 @@ button:focus, select:focus {
 /* Search container */
 .search-container {
     position: relative;
-    margin: 15px auto 25px;
+    margin: 15px auto 20px;
     max-width: 500px;
     display: flex;
     align-items: center;
@@ -1630,25 +1635,102 @@ tr.past-exam td {
 /* Restore mobile optimizations */
 @media (max-width: 768px) {
     .header h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        margin: 15px 0 10px;
     }
-    
+
+    .search-container {
+        margin: 10px 15px 15px;
+    }
+
+    .search-input {
+        padding: 10px 35px;
+        font-size: 0.95rem;
+    }
+
     .view-options {
-        flex-wrap: wrap;
+        margin: 10px 15px;
+        gap: 8px;
     }
-    
-    .subject-table th, .subject-table td {
+
+    .view-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Ensure proper spacing for the study schedule view */
+    .calendar-container {
+        margin: 15px;
+        border-radius: 12px;
+    }
+
+    .month-container {
         padding: 10px;
     }
-    
-    .subject-table th:nth-child(3), 
-    .subject-table td:nth-child(3) {
-        text-align: center;
+
+    .month-container h3 {
+        font-size: 1rem;
+        padding: 8px 10px;
+        margin: 5px 0;
     }
-    
-    .icon-button, .fab {
-        width: 45px;
-        height: 45px;
+
+    .month-container ul {
+        margin: 8px 0;
+    }
+
+    .month-container li {
+        padding: 6px 0;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.6rem;
+        margin: 12px 0 8px;
+    }
+
+    .search-container {
+        margin: 8px 12px 12px;
+    }
+
+    .search-input {
+        padding: 8px 32px;
+        font-size: 0.9rem;
+    }
+
+    .view-options {
+        margin: 8px 12px;
+        gap: 6px;
+    }
+
+    .view-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Further optimize study schedule view for smaller screens */
+    .calendar-container {
+        margin: 12px;
+    }
+
+    .month-container {
+        padding: 8px;
+    }
+
+    .month-container h3 {
+        font-size: 0.95rem;
+        padding: 6px 8px;
+    }
+
+    .month-container li {
+        padding: 5px 0;
+        font-size: 0.85rem;
+    }
+
+    .subject-badge {
+        padding: 3px 8px;
+        font-size: 0.8rem;
     }
 }
 
