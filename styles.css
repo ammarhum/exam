@@ -1665,4 +1665,359 @@ tr.past-exam td {
     align-items: center;
     justify-content: center;
     color: var(--text-color);
+}
+
+/* Schedule table specific styles */
+.schedule-table {
+    margin-top: 20px;
+}
+
+.schedule-table th,
+.schedule-table td {
+    padding: 12px 15px;
+    vertical-align: middle;
+}
+
+.schedule-table th:last-child,
+.schedule-table td:last-child {
+    font-weight: 500;
+}
+
+.schedule-table tr.urgent-exam td {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.schedule-table tr.soon-exam td {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.schedule-table tr.upcoming-exam td {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.schedule-table tr.distant-exam td {
+    background-color: rgba(108, 117, 125, 0.1);
+}
+
+.schedule-table tr.past-exam td {
+    background-color: rgba(108, 117, 125, 0.05);
+    opacity: 0.7;
+}
+
+/* Mobile optimizations for schedule view */
+@media (max-width: 768px) {
+    .schedule-table th,
+    .schedule-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .schedule-table th:last-child,
+    .schedule-table td:last-child {
+        font-size: 13px;
+    }
+}
+
+/* New Study Schedule Styles */
+#schedule-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#schedule-container h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+#schedule-container h2 {
+    color: #3498db;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-top: 40px;
+}
+
+#schedule-container h3 {
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 25px;
+    color: #2c3e50;
+}
+
+#schedule-container ul {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+#schedule-container li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.subject-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-weight: bold;
+    min-width: 100px;
+}
+
+.maths {
+    background-color: #3498db;
+    color: white;
+}
+
+.chemistry {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.physics {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cs {
+    background-color: #9b59b6;
+    color: white;
+}
+
+.exam-day {
+    background-color: #ffeb3b;
+    font-weight: bold;
+}
+
+.exam-badge {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.final-review {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.calendar-container {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.month-container {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.month-container h3 {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    margin: 15px 0 10px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+
+.month-container h3:first-of-type {
+    border-top: none;
+}
+
+.progress-container {
+    width: 100%;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+    .countdown {
+        padding: 15px;
+    }
+
+    .countdown-subject {
+        font-size: 1.1rem;
+    }
+
+    .countdown-time {
+        font-size: 1rem;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .countdown {
+        padding: 12px;
+    }
+
+    .countdown-subject {
+        font-size: 1rem;
+    }
+
+    .countdown-time {
+        font-size: 0.9rem;
+        gap: 10px;
+    }
+}
+
+/* Study Schedule Styles */
+.calendar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.month-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.month-container h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.month-container h3 {
+    color: #666;
+    font-size: 18px;
+    margin: 15px 0 10px;
+}
+
+.month-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px;
+}
+
+.month-container li {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subject-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.subject-badge.maths {
+    background-color: #4CAF50;
+}
+
+.subject-badge.chemistry {
+    background-color: #2196F3;
+}
+
+.subject-badge.physics {
+    background-color: #9C27B0;
+}
+
+.subject-badge.cs {
+    background-color: #FF9800;
+}
+
+.exam-badge {
+    background-color: #f44336;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.final-review {
+    background-color: #FFC107;
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: auto;
+}
+
+.exam-day {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.progress-container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+    text-align: center;
+}
+
+.countdown {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .calendar-container {
+        padding: 10px;
+    }
+
+    .month-container {
+        padding: 15px;
+    }
+
+    .month-container h2 {
+        font-size: 20px;
+    }
+
+    .month-container h3 {
+        font-size: 16px;
+    }
+
+    .month-container li {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .subject-badge,
+    .exam-badge,
+    .final-review {
+        font-size: 12px;
+        padding: 3px 6px;
+    }
+
+    .countdown {
+        font-size: 20px;
+    }
 } 

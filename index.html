@@ -559,12 +559,407 @@
         <div class="view-options">
             <button class="view-btn active" id="subjects-btn" data-view="subjects">By Subject</button>
             <button class="view-btn" id="chronological-btn" data-view="chronological">Chronological</button>
+            <button class="view-btn" id="schedule-btn" data-view="schedule">Study Schedule</button>
         </div>
         
         <!-- Create a single container to hold all views -->
         <div id="exam-view">
             <div class="exam-table-container" id="subjects-container"></div>
             <div class="exam-table-container" id="chronological-container" style="display: none;"></div>
+            <div class="exam-table-container" id="schedule-container" style="display: none;">
+                <h1>Exam Preparation Schedule</h1>
+                
+                <div class="calendar-container">
+                    <div class="month-container">
+                        <h3>April 4 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 5 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 6 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>April 7 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 8 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 9 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 10 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                        </ul>
+                        
+                        <h3>April 11 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 12 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 13 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 14 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                        </ul>
+                        
+                        <h3>April 15 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 16 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 17 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 18 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                        </ul>
+                        
+                        <h3>April 19 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 20 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>April 21 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>April 22 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>April 23 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>April 24 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 25 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 26 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                        </ul>
+                        
+                        <h3>April 27 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 28 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>April 29 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3 class="exam-day">April 30 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                        </ul>
+                        
+                        <h3>May 1 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>May 2 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>May 3 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>May 4 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                        </ul>
+                        
+                        <h3>May 5 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>May 6 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>May 7 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>May 8 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3 class="exam-day">May 9 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>May 10 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 11 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3 class="exam-day">May 12 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 13 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 14 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                        </ul>
+                        
+                        <h3 class="exam-day">May 15 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>May 16 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 17 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 18 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                        </ul>
+                        
+                        <h3>May 19 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3 class="exam-day">May 20 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3 class="exam-day">May 21 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 22 (Thursday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 23 (Friday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 24 (Saturday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 25 (Sunday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 26 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3>May 27 (Tuesday) - June 3 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                        </ul>
+                        
+                        <h3 class="exam-day">June 4 (Wednesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge maths">Maths</span> 2H Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span></li>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3>June 5 (Thursday) - June 9 (Monday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                        </ul>
+                        
+                        <h3 class="exam-day">June 10 (Tuesday)</h3>
+                        <ul>
+                            <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Add export to calendar button under the tables -->
@@ -643,44 +1038,34 @@
 
             // Make sure containers exist
             const subjectsContainer = document.getElementById('subjects-container');
-                const chronologicalContainer = document.getElementById('chronological-container');
+            const chronologicalContainer = document.getElementById('chronological-container');
+            const scheduleContainer = document.getElementById('schedule-container');
             
-            if (!subjectsContainer || !chronologicalContainer) {
+            if (!subjectsContainer || !chronologicalContainer || !scheduleContainer) {
                 console.error('One or more tab containers not found');
-                    return;
-                }
-                
-            // Reset display styles to ensure clean state
+                return;
+            }
+            
+            // Hide all containers first
             document.querySelectorAll('.exam-table-container').forEach(container => {
-                container.style.display = 'block';
+                container.style.display = 'none';
             });
             
-            // Set initial tab visibility
+            // Show only the subjects container
             subjectsContainer.style.display = 'block';
+            
+            // Set subjects button as active
+            const subjectsBtn = document.querySelector('.view-btn[data-view="subjects"]');
+            if (subjectsBtn) {
+                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                subjectsBtn.classList.add('active');
+            }
 
-            // Render subjects in the subjects container only
+            // Render only the subjects view initially
             renderSubjects();
-            console.log('Subjects rendered');
-
+            
             // Update all days left
             updateAllDaysLeft();
-            console.log('Days left updated');
-            
-            // Ensure the active button is set correctly
-            const activeButton = document.querySelector('.view-btn.active');
-            if (activeButton) {
-                // If a button is already active, switch to that tab
-                const activeTabName = activeButton.getAttribute('data-view');
-                if (activeTabName && activeTabName !== 'subjects') {
-                    switchToTab(activeTabName);
-                }
-            } else {
-                // Set subjects as active if no button is active
-                const subjectsBtn = document.querySelector('.view-btn[data-view="subjects"]');
-                if (subjectsBtn) {
-                    subjectsBtn.classList.add('active');
-                }
-            }
         }
         
         // Set up tab switching functionality
@@ -735,6 +1120,8 @@
                     renderSubjects();
                 } else if (tabName === 'chronological') {
                     renderExamsInOrder();
+                } else if (tabName === 'schedule') {
+                    renderSchedule();
                 }
             } else {
                 console.error('Container not found:', tabName + '-container');
@@ -961,6 +1348,421 @@
                 chronologicalContainer.appendChild(table);
             } catch (error) {
                 console.error('Error rendering exams in order:', error);
+            }
+        }
+        
+        // Function to render study schedule
+        function renderSchedule() {
+            try {
+                const scheduleContainer = document.getElementById('schedule-container');
+                if (!scheduleContainer) {
+                    console.error('Schedule container not found');
+                    return;
+                }
+                
+                // Clear previous content
+                scheduleContainer.innerHTML = '';
+                
+                // Create and append the new content
+                const content = document.createElement('div');
+                content.innerHTML = `
+                    <h1>Exam Preparation Schedule</h1>
+                    
+                    <div class="calendar-container">
+                        <div class="month-container">
+                            <h3>April 4 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 5 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 6 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>April 7 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 8 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 9 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 10 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            </ul>
+                            
+                            <h3>April 11 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 12 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 13 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 14 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            </ul>
+                            
+                            <h3>April 15 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 16 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 17 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 18 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            </ul>
+                            
+                            <h3>April 19 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 20 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>April 21 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>April 22 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>April 23 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>April 24 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 25 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 26 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                            </ul>
+                            
+                            <h3>April 27 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 28 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>April 29 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3 class="exam-day">April 30 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P4 Theory Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                            </ul>
+                            
+                            <h3>May 1 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>May 2 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>May 3 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper</li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>May 4 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper</li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper</li>
+                            </ul>
+                            
+                            <h3>May 5 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>May 6 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>May 7 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>May 8 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3 class="exam-day">May 9 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P4 Theory Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>May 10 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 11 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3 class="exam-day">May 12 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P1 Theory Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 13 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 14 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper</li>
+                            </ul>
+                            
+                            <h3 class="exam-day">May 15 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 1H Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P6 Practical Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>May 16 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 17 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 18 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper</li>
+                            </ul>
+                            
+                            <h3>May 19 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3 class="exam-day">May 20 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge physics">Physics</span> P6 Practical Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3 class="exam-day">May 21 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge cs">CS</span> P2 Practical Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 22 (Thursday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 23 (Friday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 24 (Saturday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 25 (Sunday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 26 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper</li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper</li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3>May 27 (Tuesday) - June 3 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper</li>
+                            </ul>
+                            
+                            <h3 class="exam-day">June 4 (Wednesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge maths">Maths</span> 2H Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge physics">Physics</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span></li>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3>June 5 (Thursday) - June 9 (Monday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="final-review">Final Review</span></li>
+                            </ul>
+                            
+                            <h3 class="exam-day">June 10 (Tuesday)</h3>
+                            <ul>
+                                <li><span class="subject-badge chemistry">Chemistry</span> P2 Multi-Choice Paper <span class="exam-badge">EXAM</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                
+                scheduleContainer.appendChild(content);
+            } catch (error) {
+                console.error('Error rendering study schedule:', error);
             }
         }
         
